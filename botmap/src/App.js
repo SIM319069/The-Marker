@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 
 const API_KEY = "8e4d82f938d73b8ee730140e9b48f9c5bf8fcfe874eb5058f0fe30a0b8fdd1fe";
@@ -60,7 +59,11 @@ function App() {
     .filter(event => 
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase()))
+      (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.who && event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (new Date(event.start_dt).toLocaleDateString().includes(searchTerm)) ||
+      (new Date(event.start_dt).toLocaleTimeString().includes(searchTerm)) ||
+      (new Date(event.end_dt).toLocaleTimeString().includes(searchTerm))
     );
 
   return (
@@ -75,60 +78,17 @@ function App() {
         />
         <div className="filters">
           <h3>Filters:</h3>
-          <label>
-            <input
-              type="checkbox"
-              name="cpe"
-              checked={filters.cpe}
-              onChange={handleFilterChange}
-            />
-            cpe
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="mcpe"
-              checked={filters.mcpe}
-              onChange={handleFilterChange}
-            />
-            mcpe
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="isne"
-              checked={filters.isne}
-              onChange={handleFilterChange}
-            />
-            isne
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="RoomReservation"
-              checked={filters.RoomReservation}
-              onChange={handleFilterChange}
-            />
-            Room reservation
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="Xternalmcpe"
-              checked={filters.Xternalmcpe}
-              onChange={handleFilterChange}
-            />
-            Xternal mcpe
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="XternalUndergrad"
-              checked={filters.XternalUndergrad}
-              onChange={handleFilterChange}
-            />
-            Xternal Undergrad
-          </label>
+          {Object.keys(filters).map(filter => (
+            <label key={filter}>
+              <input
+                type="checkbox"
+                name={filter}
+                checked={filters[filter]}
+                onChange={handleFilterChange}
+              />
+              {filter}
+            </label>
+          ))}
         </div>
         <ul>
           {filteredEvents.map(event => (
@@ -136,8 +96,8 @@ function App() {
               <h2>{event.title}</h2>
               <p><strong>Date:</strong> {new Date(event.start_dt).toLocaleDateString()}</p>
               <p><strong>Time:</strong> {new Date(event.start_dt).toLocaleTimeString()} - {new Date(event.end_dt).toLocaleTimeString()}</p>
-              <p><strong>Description:</strong> {event.notes || 'No description available'}</p>
               <p><strong>Location:</strong> {event.location || 'No location specified'}</p>
+              <p><strong>Professor:</strong> {event.who || 'No professor specified'}</p>
             </li>
           ))}
         </ul>
