@@ -8,6 +8,15 @@ const BASE_URL = 'https://api.teamup.com/ksg7y4nwkfp7q6xyio';
 
 function App() {
   const [events, setEvents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    cpe: false,
+    mcpe: false,
+    isne: false,
+    RoomReservation: false,
+    Xternalmcpe: false,
+    XternalUndergrad: false,
+  });
 
   useEffect(() => {
     axios.get(`${BASE_URL}/events`, {
@@ -24,31 +33,110 @@ function App() {
     });
   }, []);
 
+  const handleSearch = event => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleFilterChange = event => {
+    setFilters({
+      ...filters,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const filterEvents = event => {
+    let include = true;
+    if (filters.cpe && !event.title.includes('cpe')) include = false;
+    if (filters.mcpe && !event.title.includes('mcpe')) include = false;
+    if (filters.isne && !event.title.includes('isne')) include = false;
+    if (filters.RoomReservation && !event.title.includes('Room reservation')) include = false;
+    if (filters.Xternalmcpe && !event.title.includes('xternal mcpe')) include = false;
+    if (filters.XternalUndergrad && !event.title.includes('xternal Undergrad')) include = false;
+    return include;
+  };
+
+  const filteredEvents = events
+    .filter(event => filterEvents(event))
+    .filter(event => 
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn BOTMAPS
-        </a>
-      </header>
       <main>
         <h1>Teamup Events</h1>
+        <input
+          type="text"
+          placeholder="Search events"
+          value={searchTerm}
+          onChange={handleSearch}
+        />
+        <div className="filters">
+          <h3>Filters:</h3>
+          <label>
+            <input
+              type="checkbox"
+              name="cpe"
+              checked={filters.cpe}
+              onChange={handleFilterChange}
+            />
+            cpe
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="mcpe"
+              checked={filters.mcpe}
+              onChange={handleFilterChange}
+            />
+            mcpe
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="isne"
+              checked={filters.isne}
+              onChange={handleFilterChange}
+            />
+            isne
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="RoomReservation"
+              checked={filters.RoomReservation}
+              onChange={handleFilterChange}
+            />
+            Room reservation
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="Xternalmcpe"
+              checked={filters.Xternalmcpe}
+              onChange={handleFilterChange}
+            />
+            Xternal mcpe
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="XternalUndergrad"
+              checked={filters.XternalUndergrad}
+              onChange={handleFilterChange}
+            />
+            Xternal Undergrad
+          </label>
+        </div>
         <ul>
-          {events.map(event => (
+          {filteredEvents.map(event => (
             <li key={event.id} className="event-item">
               <h2>{event.title}</h2>
-              <p><strong>Date:</strong> {new Date(event.startTime).toLocaleDateString()}</p>
-              <p><strong>Time:</strong> {new Date(event.startTime).toLocaleTimeString()} - {new Date(event.endTime).toLocaleTimeString()}</p>
-              <p><strong>Description:</strong> {event.description || 'No description available'}</p>
+              <p><strong>Date:</strong> {new Date(event.start_dt).toLocaleDateString()}</p>
+              <p><strong>Time:</strong> {new Date(event.start_dt).toLocaleTimeString()} - {new Date(event.end_dt).toLocaleTimeString()}</p>
+              <p><strong>Description:</strong> {event.notes || 'No description available'}</p>
               <p><strong>Location:</strong> {event.location || 'No location specified'}</p>
             </li>
           ))}
