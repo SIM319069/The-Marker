@@ -19,13 +19,3 @@ export const fetchData = async () => {
         throw error;
     }
 };
-
-export const fetchTags = async () => {
-    try {
-        const response = await apiClient.get('/tags');
-        return response.data.tags;
-    } catch (error) {
-        console.error('Error fetching tags', error);
-        throw error;
-    }
-};
