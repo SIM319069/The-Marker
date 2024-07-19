@@ -1,0 +1,30 @@
+.NavBar {
+  width: 200px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  position: fixed;
+}
+
+.NavBar h2 {
+  margin: 0 0 20px 0;
+}
+
+.NavBar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.NavBar li {
+  margin-bottom: 10px;
+}
+
+.NavBar a {
+  color: white;
+  text-decoration: none;
+}
+
+.NavBar a:hover {
+  text-decoration: underline;
+}
