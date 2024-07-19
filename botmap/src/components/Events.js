@@ -69,15 +69,14 @@ function Events() {
     );
   const totalFilteredEventsCount = filteredEvents.length;
 
-  const uniqueEvents = [...new Set(events.map(event => event.location).filter(Boolean))];
-  const totalEventCount = uniqueEvents.length;
+  const totalEventCount = events.length; // all event that we have
 
   const cpeCount = events.filter(event => event.title.includes('cpe')).length;
   const mcpeCount = events.filter(event => event.title.includes('mcpe')).length;
   const isneCount = events.filter(event => event.title.includes('isne')).length;
 
 
-  const data = {
+  const chartData = {
     labels: ['CPE', 'MCPE', 'ISNE'],
     datasets: [
       {
@@ -89,28 +88,28 @@ function Events() {
   };
 
   return (
-    <div className="Events">
-      <main>
-        <h1>Teamup Events</h1>
+    <div className="flex m-0 font-sans bg-eventbackgroundcolor">
+      <main className='flex-1 p-0 ml-[150px] rounded-[8px] shadow-[0_0_10px_rgba(0,0,0,0.1)]' >
+        <h1 className='text-center mb-[20px]'>Teamup Events</h1>
         <div className="data-display">
-          <h3>Total Events : {totalEventCount}</h3>
+          <h3 className=''>Total Events : {totalEventCount}</h3>
           <h3>Total Filtered Events: {totalFilteredEventsCount}</h3>
-          <div className="chart-container"><Bar data={data} /></div>
-          
-          
+          <div className="chart-container"><Bar data={chartData} /></div>
         </div>
         <input
           type="text"
+          class="w-full p-2.5 mb-5 border border-gray-300 rounded-sm" 
           placeholder="Search events"
           value={searchTerm}
           onChange={handleSearch}
         />
-        <div className="filters">
-          <h3>Filters:</h3>
+        <div className="mb-[20px] ml-[25px]">
+          <h3 className='mb-[10px]'>Filters:</h3>
           {Object.keys(filters).map(filter => (
-            <label key={filter}>
+            <label className='block mb-[10px]' key={filter}>
               <input
                 type="checkbox"
+                className='mr-[10px]'
                 name={filter}
                 checked={filters[filter]}
                 onChange={handleFilterChange}
@@ -119,14 +118,14 @@ function Events() {
             </label>
           ))}
         </div>
-        <ul>
+        <ul className='list-none p-0'>
           {filteredEvents.map(event => (
-            <li key={event.id} className="event-item">
-              <h2>{event.title}</h2>
-              <p><strong>Date:</strong> {new Date(event.start_dt).toLocaleDateString()}</p>
-              <p><strong>Time:</strong> {new Date(event.start_dt).toLocaleTimeString()} - {new Date(event.end_dt).toLocaleTimeString()}</p>
-              <p><strong>Location:</strong> {event.location || 'No location specified'}</p>
-              <p><strong>Professor:</strong> {event.who || 'No professor specified'}</p>
+            <li key={event.id} className="bg-gray-100 p-[15px] mb-[10px] ml-[25px] rounded-sm shadow-[0_0_5px_rgba(0,0,0,0.1)]">
+              <h2 className='mb-[10px]'>{event.title}</h2>
+              <p className='my-[5px]'><strong>Date:</strong> {new Date(event.start_dt).toLocaleDateString()}</p>
+              <p className='my-[5px]'><strong>Time:</strong> {new Date(event.start_dt).toLocaleTimeString()} - {new Date(event.end_dt).toLocaleTimeString()}</p>
+              <p className='my-[5px]'><strong>Location:</strong> {event.location || 'No location specified'}</p>
+              <p className='my-[5px]'><strong>Professor:</strong> {event.who || 'No professor specified'}</p>
             </li>
           ))}
         </ul>

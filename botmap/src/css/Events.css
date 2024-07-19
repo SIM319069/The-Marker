@@ -1,17 +1,18 @@
-body {
+ /* body {
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-}
+} */
 
-.Events {
+
+/*.Events {
   display: flex;
 }
 
 main {
   flex: 1;
   padding: 20px;
-  margin-left: 220px; /* Space for nav bar plus some padding */
+  margin-left: 220px; 
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -68,4 +69,4 @@ ul {
 
 .event-item p {
   margin: 5px 0;
-}
+} */
