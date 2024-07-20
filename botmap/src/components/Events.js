@@ -95,16 +95,19 @@ function Events() {
 			{
 				label: "Event Count",
 				data: [cpeCount, mcpeCount, isneCount],
-				backgroundColor: ["#36a2eb", "#ff6384", "#ffcd56"],
+				backgroundColor: ["rgba(255,99,132,0.2)", "#ff6384", "#ffcd56"],
 			},
 		],
 	};
 
 	return (
-		<div className="flex m-0 font-sans bg-[rgb(245,249,255) min-h-screen]">
-			<main className="flex-1 p-0 ml-[150px]">
-				<h1 className="text-center mb-[20px]">Teamup Events</h1>
-				<div className="flex flex-wrap space-x-4 space-y-4 mb-6">
+		<div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
+			<main className="flex-1 p-0 ml-[150px] p-[20px]">
+				<h1 className=" mb-[20px] font-serif ml-[20px] text-[50px] font-bold">
+					Teamup Events
+				</h1>
+				<div className="flex bg-gray-400 mb-[20px] w-[1650px] h-[50px] item-center justify-center"></div>
+				<div className="grid grid-cols-3 gap-4">
 					<StatisticBox
 						title="Total Event"
 						value={totalEventCount}
@@ -115,109 +118,88 @@ function Events() {
 						value={totalFilteredEventsCount}
 						percentage={null}
 					/>
-					{/* Add additional StatisticBox components here */}
 					<StatisticBox
-						title="Another Statistic"
-						value={123}
+						title="Total Filtered Events"
+						value={totalFilteredEventsCount}
 						percentage={null}
 					/>
 					<StatisticBox
-						title="Yet Another Statistic"
-						value={456}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Another Statistic"
-						value={123}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Yet Another Statistic"
-						value={456}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Another Statistic"
-						value={123}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Yet Another Statistic"
-						value={456}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Another Statistic"
-						value={123}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Yet Another Statistic"
-						value={456}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Another Statistic"
-						value={123}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Yet Another Statistic"
-						value={456}
+						title="Total Filtered Events"
+						value={totalFilteredEventsCount}
 						percentage={null}
 					/>
 				</div>
-				<div className="chart-container">
-					<Bar data={chartData} />
+				<div className=" grid grid-cols-2 p-[20px] p-[20px] flex item-center w-[500px]">
+					<Bar className="bg-gray-100" data={chartData} />
+					<Bar className="bg-gray-100" data={chartData} />
+					<Bar className="bg-gray-100" data={chartData} />
+					<Bar className="bg-gray-100" data={chartData} />
+					<Bar className="bg-gray-100" data={chartData} />
 				</div>
-				<input
-					type="text"
-					class="w-full p-2.5 mb-5 border border-gray-300 rounded-sm"
-					placeholder="Search events"
-					value={searchTerm}
-					onChange={handleSearch}
-				/>
+				{/* can't set themultiple bar like the statistic box (can someone help me?)*/}
+
 				<div className="mb-[20px] ml-[25px]">
-					<h3 className="mb-[10px]">Filters:</h3>
-					{Object.keys(filters).map((filter) => (
-						<label className="block mb-[10px]" key={filter}>
-							<input
-								type="checkbox"
-								className="mr-[10px]"
-								name={filter}
-								checked={filters[filter]}
-								onChange={handleFilterChange}
-							/>
-							{filter}
-						</label>
-					))}
+					<div className="flex items-center justify-center gap-4">
+						<h3 className="text-center text-lg font-sans md:font-serif ">
+							Filters:
+						</h3>
+						<input
+							type="text"
+							className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+							placeholder="Search events"
+							value={searchTerm}
+							onChange={handleSearch}
+						/>
+					</div>
+
+					<div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-[1650px] h-[50px] item-center justify-center"></div>
+
+					<div className="flex mt-[20px]">
+						<div className=" mr-[10px]">
+							{Object.keys(filters).map((filter) => (
+								<label
+									className="grid grid-cols-3 gap-4 mb-[10px] "
+									key={filter}>
+									<input
+										type="checkbox"
+										className="ml-[75px] text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+										name={filter}
+										checked={filters[filter]}
+										onChange={handleFilterChange}
+									/>
+									{filter}
+								</label>
+							))}
+						</div>
+
+						<ul className="list-none p-0 w-full max-w-xl">
+							{filteredEvents.map((event) => (
+								<li
+									key={event.id}
+									className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm">
+									<h2 className="mb-[10px]">{event.title}</h2>
+									<p className="my-[5px]">
+										<strong>Date:</strong>{" "}
+										{new Date(event.start_dt).toLocaleDateString()}
+									</p>
+									<p className="my-[5px]">
+										<strong>Time:</strong>{" "}
+										{new Date(event.start_dt).toLocaleTimeString()} -{" "}
+										{new Date(event.end_dt).toLocaleTimeString()}
+									</p>
+									<p className="my-[5px]">
+										<strong>Location:</strong>{" "}
+										{event.location || "No location specified"}
+									</p>
+									<p className="my-[5px]">
+										<strong>Professor:</strong>{" "}
+										{event.who || "No professor specified"}
+									</p>
+								</li>
+							))}
+						</ul>
+					</div>
 				</div>
-				<ul className="list-none p-0">
-					{filteredEvents.map((event) => (
-						<li
-							key={event.id}
-							className="bg-gray-100 p-[15px] mb-[10px] ml-[25px] rounded-sm shadow-[0_0_5px_rgba(0,0,0,0.1)]">
-							<h2 className="mb-[10px]">{event.title}</h2>
-							<p className="my-[5px]">
-								<strong>Date:</strong>{" "}
-								{new Date(event.start_dt).toLocaleDateString()}
-							</p>
-							<p className="my-[5px]">
-								<strong>Time:</strong>{" "}
-								{new Date(event.start_dt).toLocaleTimeString()} -{" "}
-								{new Date(event.end_dt).toLocaleTimeString()}
-							</p>
-							<p className="my-[5px]">
-								<strong>Location:</strong>{" "}
-								{event.location || "No location specified"}
-							</p>
-							<p className="my-[5px]">
-								<strong>Professor:</strong>{" "}
-								{event.who || "No professor specified"}
-							</p>
-						</li>
-					))}
-				</ul>
 			</main>
 		</div>
 	);
