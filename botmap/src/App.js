@@ -6,7 +6,7 @@ import NavBar from './components/NavBar';
 const App = () => {
   return (
     <Router>
-      <div className="App">
+      <div className="">
         <NavBar />
         <Routes>
           <Route path="/about" element={<about />} /> 
