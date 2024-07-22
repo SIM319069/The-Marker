@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Bar } from "react-chartjs-2";
+
 import "chart.js/auto"; // Import the Chart.js library
 import "../css/Events.css"; // Import the CSS file
-import StatisticBox from "./StatisticBox"; // Import the StatisticBox component
+
+
+
 
 const API_KEY =
 	"8e4d82f938d73b8ee730140e9b48f9c5bf8fcfe874eb5058f0fe30a0b8fdd1fe";
@@ -77,68 +79,24 @@ function Events() {
 				new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
 				new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
 		);
-	const totalFilteredEventsCount = filteredEvents.length;
 
-	const totalEventCount = events.length; // all event that we have
 
-	const cpeCount = events.filter((event) => event.title.includes("cpe")).length;
-	const mcpeCount = events.filter((event) =>
-		event.title.includes("mcpe")
-	).length;
-	const isneCount = events.filter((event) =>
-		event.title.includes("isne")
-	).length;
 
-	const chartData = {
-		labels: ["CPE", "MCPE", "ISNE"],
-		datasets: [
-			{
-				label: "Event Count",
-				data: [cpeCount, mcpeCount, isneCount],
-				backgroundColor: ["rgba(255,99,132,0.2)", "#ff6384", "#ffcd56"],
-			},
-		],
-	};
+
+
+
 
 	return (
 		<div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
-			<main className="flex-1 p-0 ml-[150px] p-[20px]">
+			<main className="flex-1 ml-[150px] p-[20px]">
 				<h1 className=" mb-[20px] font-serif ml-[20px] text-[50px] font-bold">
 					Teamup Events
 				</h1>
-				<div className="flex bg-gray-400 mb-[20px] w-[1650px] h-[50px] item-center justify-center"></div>
-				<div className="grid grid-cols-3 gap-4">
-					<StatisticBox
-						title="Total Event"
-						value={totalEventCount}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Total Filtered Events"
-						value={totalFilteredEventsCount}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Total Filtered Events"
-						value={totalFilteredEventsCount}
-						percentage={null}
-					/>
-					<StatisticBox
-						title="Total Filtered Events"
-						value={totalFilteredEventsCount}
-						percentage={null}
-					/>
-				</div>
-				<div className=" grid grid-cols-2 p-[20px] p-[20px] flex item-center w-[500px]">
-					<Bar className="bg-gray-100" data={chartData} />
-					<Bar className="bg-gray-100" data={chartData} />
-					<Bar className="bg-gray-100" data={chartData} />
-					<Bar className="bg-gray-100" data={chartData} />
-					<Bar className="bg-gray-100" data={chartData} />
-				</div>
-				{/* can't set themultiple bar like the statistic box (can someone help me?)*/}
+				
+				
 
-				<div className="mb-[20px] ml-[25px]">
+
+				<div className="mb-[20px] ml-[]">
 					<div className="flex items-center justify-center gap-4">
 						<h3 className="text-center text-lg font-sans md:font-serif ">
 							Filters:
@@ -155,24 +113,24 @@ function Events() {
 					<div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-[1650px] h-[50px] item-center justify-center"></div>
 
 					<div className="flex mt-[20px]">
-						<div className=" mr-[10px]">
+						<div className=" space-y-4">
 							{Object.keys(filters).map((filter) => (
 								<label
-									className="grid grid-cols-3 gap-4 mb-[10px] "
+									className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px] "
 									key={filter}>
 									<input
 										type="checkbox"
-										className="ml-[75px] text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+										className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
 										name={filter}
 										checked={filters[filter]}
 										onChange={handleFilterChange}
 									/>
-									{filter}
+									<span>{filter}</span>
 								</label>
 							))}
 						</div>
 
-						<ul className="list-none p-0 w-full max-w-xl">
+						<ul className=" list-none p-0 w-full max-w-xl">
 							{filteredEvents.map((event) => (
 								<li
 									key={event.id}
