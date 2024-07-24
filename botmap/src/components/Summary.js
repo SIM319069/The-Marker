@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import the Chart.js library
+import StatisticBox from "./StatisticBox";
 import '../css/Summary.css';  // Import the CSS file
 
 const API_KEY = "8e4d82f938d73b8ee730140e9b48f9c5bf8fcfe874eb5058f0fe30a0b8fdd1fe";
@@ -77,11 +78,42 @@ function Summary() {
     ]
   };
 
+  const cpeCount = events.filter(event => event.title.includes('cpe')).length;
+  const mcpeCount = events.filter(event => event.title.includes('mcpe')).length;
+  const isneCount = events.filter(event => event.title.includes('isne')).length;
+  const xternalmcpeCount = events.filter(event => event.title.includes('xternal mcpe')).length;
+  const xternalUndergradCount = events.filter(event => event.title.includes('xternal undergrad')).length;
+
+  const majorchartData = {
+    labels: ['CPE', 'MCPE', 'ISNE', 'Xternal MCPE', 'Xternal Undergrad'],
+    datasets: [
+      {
+        label: 'Event Count',
+        data: [cpeCount, mcpeCount, isneCount, xternalmcpeCount, xternalUndergradCount],
+        backgroundColor: ['#36a2eb', '#ff6384', '#ffcd56', '#4bc0c0', '#9966ff'],
+      }
+    ]
+  };
+
+  const totalEventCount = events.length;
+  
+
   return (
     <div className="flex m-0 font-sans bg-summarybackgroundcolor">
-      <main className='flex-1 p-0 ml-[150px] rounded-[8px] shadow-[0_0_10px_rgba(0,0,0,0.1)]'>
-        <h1 className='text-center mb-[20px]'>Room Usage Summary</h1>
+      <main className='p-[20px] flex-1 ml-[150px] rounded-[8px] shadow-[0_0_10px_rgba(0,0,0,0.1)]'>
+        <h1 className="mb-[20px] font-serif ml-[20px] text-[50px] font-bold">Room Usage Summary</h1>
+        <div className="flex bg-gray-400 mb-[20px] w-[1650px] h-[50px] "></div>    
+        <div className="grid grid-cols-3 gap-4">
+          <StatisticBox
+          title="Total Event"
+          value={totalEventCount}
+          percentage={null}
+          />               
+        </div>
         <div className="chart-section">
+          <div className="chart-container">
+            <Bar data={majorchartData} />
+          </div>
           <div className="chart-container">
             <Bar data={chartData} options={{ indexAxis: 'y' }} /> {/* Horizontal Bar Chart */}
           </div>
