@@ -1,3 +1,26 @@
+<<<<<<< HEAD
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Events from './components/Events';
+import NavBar from './components/NavBar'; 
+import Summary from './components/Summary';
+
+const App = () => {
+  return (
+    <Router>
+      <div className="">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Summary />} />
+          <Route path="/about" element={<about />} /> 
+          <Route path="/events" element={<Events />} /> 
+          <Route path="/contact" element={<contact />} /> 
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+=======
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
@@ -100,5 +123,6 @@ const About = () => {
 const Contact = () => {
     return <div>Contact Page</div>;
 };
+>>>>>>> 28a12d9c81b7100410b45b24b36f0af4b82a137b
 
 export default App;
