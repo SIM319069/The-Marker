@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Events from './components/Events';
 import NavBar from './components/NavBar'; 
 import Summary from './components/Summary';
+import ContactUs from './components/Contact';
 
 const App = () => {
   return (
@@ -13,7 +14,7 @@ const App = () => {
           <Route path="/" element={<Summary />} />
           <Route path="/about" element={<about />} /> 
           <Route path="/events" element={<Events />} /> 
-          <Route path="/contact" element={<contact />} /> 
+          <Route path="/contact" element={<ContactUs />} /> 
         </Routes>
       </div>
     </Router>

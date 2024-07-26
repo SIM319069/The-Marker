@@ -1,30 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Doughnut } from 'react-chartjs-2';
-import 'chart.js/auto'; // Import the Chart.js library
+import 'chart.js/auto'; 
 import StatisticBox from "./StatisticBox";
-import '../css/Summary.css';  // Import the CSS file
-
-const API_KEY = "8e4d82f938d73b8ee730140e9b48f9c5bf8fcfe874eb5058f0fe30a0b8fdd1fe";
-const BASE_URL = 'https://api.teamup.com/ksg7y4nwkfp7q6xyio';
+import '../css/Summary.css';  
+import useFetchEvents from "../api/teamup";
 
 function Summary() {
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    axios.get(`${BASE_URL}/events`, {
-      headers: {
-        'Teamup-Token': API_KEY,
-      }
-    })
-    .then(response => {
-      setEvents(response.data.events);
-      console.log('Fetched data: ', response.data.events); // Log the fetched events
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-    });
-  }, []);
+  const events = useFetchEvents(); // Use the custom hook to fetch events data
 
   const roomUsage = events.reduce((acc, event) => {
     const room = event.location || 'No location specified';
