@@ -7,7 +7,7 @@ import '../css/Summary.css';
 import useFetchEvents from "../api/teamup";
 
 function Summary() {
-  const events = useFetchEvents(); // Use the custom hook to fetch events data
+  const { events } = useFetchEvents(); // Use the custom hook to fetch events data
 
   const roomUsage = events.reduce((acc, event) => {
     const room = event.location || 'No location specified';
