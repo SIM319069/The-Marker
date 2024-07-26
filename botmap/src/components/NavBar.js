@@ -1,31 +1,57 @@
-import React from "react";
-import { Link, useNavigate  } from "react-router-dom";
-import "../css/NavBar.css"; // Import the CSS file for the nav bar
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaInfoCircle, FaCalendarAlt, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
+import logo from '../Images/marker_logo.png';
 
 function NavBar() {
+    const [isOpen, setIsOpen] = useState(true);
     let navigate = useNavigate();
 
     const navigateTo = (path) => {
         navigate(path);
     };
 
-    return (
-        <nav className="w-[150px] bg-navbarcolor text-navbarcolor h-screen fixed ">
-            <div className="text-center ">
-                <div className=" text-2xl border-[0.5px] h-full border-navbarcolor font-bold bg-gray-200 shadow-sm hover:bg-gray-400 transition cursor-pointer">
-                    <Link to="/">BOtMAPs</Link>
-                </div>
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
 
-                <ul className="list-none ">
-                    <li className="h-6 border-[0.5px] border-navbarcolor bg-gray-200 shadow-sm hover:bg-gray-400 transition cursor-pointer" onClick={() => navigateTo('/about')}>
-                        About
-                    </li>
-                    <li className="h-6 border-[0.5px] border-navbarcolor bg-gray-200 shadow-sm hover:bg-gray-400 transition cursor-pointer" onClick={() => navigateTo('/events')}>
-                        Events
-                    </li>
-                    <li className="h-6 border-[0.5px] border-navbarcolor bg-gray-200 shadow-sm hover:bg-gray-400 transition rounded-b-[5px] cursor-pointer" onClick={() => navigateTo('/contact')}>
-                        Contact
-                    </li>
+    return (
+        <nav className={`fixed top-0 left-0 h-screen ${isOpen ? 'w-40' : 'w-16'} bg-white text-gray-800 shadow-lg transition-all duration-300`}>
+            <div className="flex flex-col items-center py-4">
+                <button
+                    onClick={toggleSidebar}
+                    className="absolute top-2 right-1 p-2 text-gray-800 hover:text-blue-500 focus:outline-none"
+                >
+                    {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                </button>
+                {isOpen && (
+                    <div className="flex flex-col items-center mt-6">
+                        <Link to="/" className="flex flex-col items-center text-gray-800 text-2xl font-bold">
+                            <img src={logo} alt="Logo" className="w-16 h-16 rounded-full mb-3" />
+                            <span className="text-sm">BOtMAPs</span>
+                        </Link>
+                    </div>
+                )}
+                <ul className="w-full mt-6">
+                    {isOpen ? (
+                        <>
+                            <li className="group flex items-center py-4 px-6 hover:bg-gray-100 transition cursor-pointer" onClick={() => navigateTo('/about')}>
+                                <FaInfoCircle className="text-lg mr-3 group-hover:text-blue-500 transition" />
+                                <span className="text-base group-hover:text-blue-500 transition">About</span>
+                            </li>
+                            <li className="group flex items-center py-4 px-6 hover:bg-gray-100 transition cursor-pointer" onClick={() => navigateTo('/events')}>
+                                <FaCalendarAlt className="text-lg mr-3 group-hover:text-blue-500 transition" />
+                                <span className="text-base group-hover:text-blue-500 transition">Events</span>
+                            </li>
+                            <li className="group flex items-center py-4 px-6 hover:bg-gray-100 transition cursor-pointer" onClick={() => navigateTo('/contact')}>
+                                <FaEnvelope className="text-lg mr-3 group-hover:text-blue-500 transition" />
+                                <span className="text-base group-hover:text-blue-500 transition">Contact</span>
+                            </li>
+                        </>
+                    ) : (
+                        <li>
+                        </li>
+                    )}
                 </ul>
             </div>
         </nav>
