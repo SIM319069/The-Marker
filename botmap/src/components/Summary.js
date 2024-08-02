@@ -8,7 +8,6 @@ function Summary() {
   const [selectedCategory, setSelectedCategory] = useState('majorChart');
   const [mode, setMode] = useState('today'); // Added state for mode
   const events = useFetchEvents(); // Use the custom hook to fetch events data
-  const { events } = useFetchEvents(); // Use the custom hook to fetch events data
 
   // Filter events based on selected mode
   const today = new Date();
