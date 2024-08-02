@@ -94,7 +94,6 @@ function Events() {
                                 </label>
                             ))}
                         </div>
-
                         <ul className=" list-none p-0 w-full max-w-xl">
                             {filteredEvents.map((event) => (
                                 <li
