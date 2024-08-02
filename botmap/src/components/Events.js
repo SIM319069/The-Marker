@@ -3,7 +3,8 @@ import "../css/Events.css";
 import useFetchEvents from "../api/teamup";
 
 function Events() {
-    const events = useFetchEvents();
+    const { events } = useFetchEvents(); 
+    const { subcalendarDetails } = useFetchEvents(); 
     const [searchTerm, setSearchTerm] = useState("");
     const [filters, setFilters] = useState({
         cpe: false,
@@ -12,6 +13,7 @@ function Events() {
         RoomReservation: false,
         Xternalmcpe: false,
         XternalUndergrad: false,
+        ปฏิทินการศึกษา: false
     });
 
     const handleSearch = (event) => {
@@ -27,14 +29,17 @@ function Events() {
 
     const filterEvents = (event) => {
         let include = true;
-        if (filters.cpe && !event.title.includes("cpe")) include = false;
-        if (filters.mcpe && !event.title.includes("mcpe")) include = false;
-        if (filters.isne && !event.title.includes("isne")) include = false;
-        if (filters.RoomReservation && !event.title.includes("Room reservation"))
+        
+        if (filters.cpe && event.subcalendar_ids != 3454069) include = false;
+        if (filters.mcpe && !event.title.toLowerCase().includes("mcpe")) include = false;
+        if (filters.isne && event.subcalendar_ids != 3454070) include = false;
+        if (filters.RoomReservation && event.subcalendar_ids != 6820246)
             include = false;
-        if (filters.Xternalmcpe && !event.title.includes("xternal mcpe"))
+        if (filters.Xternalmcpe && event.subcalendar_ids != 8208439)
             include = false;
-        if (filters.XternalUndergrad && !event.title.includes("xternal Undergrad"))
+        if (filters.XternalUndergrad && event.subcalendar_ids != 3454093)
+            include = false;
+        if (filters.ปฏิทินการศึกษา && event.subcalendar_ids != 6616868)
             include = false;
         return include;
     };
@@ -94,7 +99,6 @@ function Events() {
                                 </label>
                             ))}
                         </div>
-
                         <ul className=" list-none p-0 w-full max-w-xl">
                             {filteredEvents.map((event) => (
                                 <li
