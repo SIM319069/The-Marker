@@ -363,6 +363,7 @@ const filterEvents = (event) => {
               <p className="my-[5px]">
                 <strong>Professor:</strong>{" "}
                 {event.who || "No professor specified"}
+                
               </p>
             </li>
           ))}
