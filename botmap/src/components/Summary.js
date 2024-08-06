@@ -3,6 +3,7 @@ import { Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import StatisticBox from "./StatisticBox";
 import useFetchEvents from "../api/teamup";
+import moment from "moment";
 
 function Summary() {
   const [selectedCategory, setSelectedCategory] = useState("majorChart");
@@ -17,21 +18,40 @@ function Summary() {
     XternalUndergrad: false,
   });
   const [searchTerm, setSearchTerm] = useState("");
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Filter events based on selected mode
-  const today = new Date();
-  const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+  // Get start and end dates based on mode
+  const getDatesForMode = (mode) => {
+    const today = moment().startOf('day');
+    const startOfWeek = moment().startOf('week');
+    const endOfWeek = moment().endOf('week');
+    const startOfMonth = moment().startOf('month');
+    const endOfMonth = moment().endOf('month');
 
-  const handleFilterChangemorons = (event) => {
+    switch (mode) {
+      case "today":
+        return { start: today, end: today.clone().endOf('day') };
+      case "week":
+        return { start: startOfWeek, end: endOfWeek };
+      case "month":
+        return { start: startOfMonth, end: endOfMonth };
+      default:
+        return { start: null, end: null };
+    }
+  };
+
+  const { start, end } = getDatesForMode(mode);
+
+  const handleFilterChange = (event) => {
     setFilters({
       ...filters,
       [event.target.name]: event.target.checked,
     });
   };
+
   const filterEvents = (event) => {
     let include = true;
     if (filters.cpe && !event.title.includes("cpe")) include = false;
@@ -47,11 +67,8 @@ function Summary() {
   };
 
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.start_dt);
-    if (mode === "today") {
-      return eventDate >= startOfDay && eventDate <= endOfDay;
-    }
-    return true; // No filter for overall mode
+    const eventDate = moment(event.start_dt);
+    return (!start || !end || (eventDate.isBetween(start, end, null, '[]') && filterEvents(event)));
   });
 
   const roomUsage = filteredEvents.reduce((acc, event) => {
@@ -180,21 +197,19 @@ function Summary() {
       ? `${topHour.toString().padStart(2, "0")}:00 - ${(topHour + 1) % 24}:00`
       : "N/A";
 
-  const filteredEventsMorons = events
-    .filter((event) => filterEvents(event))
-    .filter(
-      (event) =>
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (event.notes &&
-          event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (event.location &&
-          event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (event.who &&
-          event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
-        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
-        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
-    );
+  const filteredEventsMorons = filteredEvents.filter(
+    (event) =>
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (event.notes &&
+        event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.location &&
+        event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.who &&
+        event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+      new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+      new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+  );
 
   return (
     <div className="flex m-0 font-sans bg-gray-100">
@@ -218,22 +233,26 @@ function Summary() {
                 id="modeSwitch"
                 type="checkbox"
                 checked={mode === "today"}
-                onChange={() => setMode(mode === "today" ? "overall" : "today")}
+                onChange={() => {
+                  setMode(mode === "today" ? "week" : mode === "week" ? "month" : "today");
+                }}
                 className="sr-only"
               />
               <div
-                onClick={() => setMode(mode === "today" ? "overall" : "today")}
-                className="w-16 h-8 bg-gray-300 rounded-full cursor-pointer relative flex items-center"
+                onClick={() => {
+                  setMode(mode === "today" ? "week" : mode === "week" ? "month" : "today");
+                }}
+                className="w-24 h-8 bg-gray-300 rounded-full cursor-pointer relative flex items-center"
               >
                 <div
                   className={`w-8 h-8 bg-blue-600 rounded-full shadow-md absolute transition-transform duration-300 ${
-                    mode === "today" ? "translate-x-8" : "translate-x-0"
+                    mode === "today" ? "translate-x-0" : mode === "week" ? "translate-x-8" : "translate-x-16"
                   }`}
                 ></div>
               </div>
             </div>
             <span className="ml-2">
-              {mode === "today" ? "Today" : "Overall"}
+              {mode.charAt(0).toUpperCase() + mode.slice(1)}
             </span>
           </div>
         </div>
@@ -315,10 +334,10 @@ function Summary() {
           )}
         </div>
         <div className="flex mt-[20px] space-x-10">
-          <div className=" space-y-4">
+          <div className="space-y-4">
             {Object.keys(filters).map((filter) => (
               <label
-                className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px] "
+                className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px]"
                 key={filter}
               >
                 <input
@@ -326,7 +345,7 @@ function Summary() {
                   className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   name={filter}
                   checked={filters[filter]}
-                  onChange={handleFilterChangemorons}
+                  onChange={handleFilterChange}
                 />
                 <span>{filter}</span>
               </label>
@@ -340,7 +359,7 @@ function Summary() {
           value={searchTerm}
           onChange={handleSearch}
         />
-        <ul className=" list-none p-0 w-full max-w-xl">
+        <ul className="list-none p-0 w-full max-w-xl">
           {filteredEventsMorons.map((event) => (
             <li
               key={event.id}
@@ -353,7 +372,7 @@ function Summary() {
               </p>
               <p className="my-[5px]">
                 <strong>Time:</strong>{" "}
-                {new Date(event.start_dt).toLocaleTimeString()} -{" "}
+                {new Date(event.start_dt).toLocaleTimeString()} - {" "}
                 {new Date(event.end_dt).toLocaleTimeString()}
               </p>
               <p className="my-[5px]">
