@@ -7,8 +7,8 @@ import moment from "moment";
 
 function Summary() {
   const [selectedCategory, setSelectedCategory] = useState("majorChart");
-  const [mode, setMode] = useState("today"); // Added state for mode
-  const events = useFetchEvents(); // Use the custom hook to fetch events data
+  const [mode, setMode] = useState("today");
+  const events = useFetchEvents();
   const [filters, setFilters] = useState({
     cpe: false,
     mcpe: false,
@@ -23,7 +23,6 @@ function Summary() {
     setSearchTerm(event.target.value);
   };
 
-  // Get start and end dates based on mode
   const getDatesForMode = (mode) => {
     const today = moment().startOf('day');
     const startOfWeek = moment().startOf('week');
@@ -107,7 +106,7 @@ function Summary() {
         data: sortedRooms.map(([, usage]) => usage.total),
         backgroundColor: sortedRooms.map(
           (_, index) => `hsl(${index * 30}, 70%, 50%)`
-        ), // Generate colors
+        ),
       },
     ],
   };
@@ -136,7 +135,7 @@ function Summary() {
           majorUsage.MCPE,
           majorUsage.OTHER,
         ],
-        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0", "#ff6384"], // Colors for each major
+        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0", "#ff6384"],
       },
     ],
   };
@@ -164,7 +163,6 @@ function Summary() {
 
   const totalEventCount = filteredEvents.length;
 
-  // Statistic calculations
   const totalRoomsUsed = Object.keys(roomUsage).length;
   const totalDuration = filteredEvents.reduce(
     (acc, event) => acc + (new Date(event.end_dt) - new Date(event.start_dt)),
@@ -175,9 +173,8 @@ function Summary() {
     totalEventCount /
     1000 /
     60
-  ).toFixed(2); // in minutes
+  ).toFixed(2);
 
-  // Peak Usage Hour Calculation
   const peakUsageHours = filteredEvents.reduce((acc, event) => {
     const startHour = new Date(event.start_dt).getHours();
     if (!acc[startHour]) {
@@ -306,8 +303,7 @@ function Summary() {
           )}
           {selectedCategory === "roomChart" && (
             <div className="w-full h-[400px]">
-              <Bar data={chartData} options={{ indexAxis: "y" }} />{" "}
-              {/* Horizontal Bar Chart */}
+              <Bar data={chartData} options={{ indexAxis: "y" }} />
             </div>
           )}
           {selectedCategory === "doughnutChart" && (
@@ -363,29 +359,37 @@ function Summary() {
           {filteredEventsMorons.map((event) => (
             <li
               key={event.id}
-              className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm"
+              className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm flex justify-between items-center"
             >
-              <h2 className="mb-[10px]">{event.title}</h2>
-              <p className="my-[5px]">
-                <strong>Date:</strong>{" "}
-                {new Date(event.start_dt).toLocaleDateString()}
-              </p>
-              <p className="my-[5px]">
-                <strong>Time:</strong>{" "}
-                {new Date(event.start_dt).toLocaleTimeString()} - {" "}
-                {new Date(event.end_dt).toLocaleTimeString()}
-              </p>
-              <p className="my-[5px]">
-                <strong>Location:</strong>{" "}
-                {event.location || "No location specified"}
-              </p>
-              <p className="my-[5px]">
-                <strong>Professor:</strong>{" "}
-                {event.who || "No professor specified"}
-              </p>
+              <div>
+                <h2 className="mb-[10px]">{event.title}</h2>
+                <p className="my-[5px]">
+                  <strong>Date:</strong>{" "}
+                  {new Date(event.start_dt).toLocaleDateString()}
+                </p>
+                <p className="my-[5px]">
+                  <strong>Time:</strong>{" "}
+                  {new Date(event.start_dt).toLocaleTimeString()} - {" "}
+                  {new Date(event.end_dt).toLocaleTimeString()}
+                </p>
+                <p className="my-[5px]">
+                  <strong>Location:</strong>{" "}
+                  {event.location || "No location specified"}
+                </p>
+                <p className="my-[5px]">
+                  <strong>Professor:</strong>{" "}
+                  {event.who || "No professor specified"}
+                </p>
+              </div>
+              <button
+             // Add a handler for the button click
+                className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+              >
+                +
+              </button>
             </li>
           ))}
-        </ul>
+        </ul> 
       </main>
     </div>
   );

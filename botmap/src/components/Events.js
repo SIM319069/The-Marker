@@ -62,6 +62,12 @@ function Events() {
         new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
     );
 
+  const handleAddClick = (eventId) => {
+    // Handle the click event for adding an event
+    console.log(`Add button clicked for event ID: ${eventId}`);
+    // You can add further logic here, such as updating state or calling an API
+  };
+
   return (
     <div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
       <main className="flex-1 ml-[150px] p-[20px] bg-[#e2e2eb] shadow-[0_0_10px_rgba(0,0,0,0.1)]">
@@ -107,26 +113,34 @@ function Events() {
               {filteredEvents.map((event) => (
                 <li
                   key={event.id}
-                  className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm"
+                  className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm flex items-center justify-between"
                 >
-                  <h2 className="mb-[10px]">{event.title}</h2>
-                  <p className="my-[5px]">
-                    <strong>Date:</strong>{" "}
-                    {new Date(event.start_dt).toLocaleDateString()}
-                  </p>
-                  <p className="my-[5px]">
-                    <strong>Time:</strong>{" "}
-                    {new Date(event.start_dt).toLocaleTimeString()} -{" "}
-                    {new Date(event.end_dt).toLocaleTimeString()}
-                  </p>
-                  <p className="my-[5px]">
-                    <strong>Location:</strong>{" "}
-                    {event.location || "No location specified"}
-                  </p>
-                  <p className="my-[5px]">
-                    <strong>Professor:</strong>{" "}
-                    {event.who || "No professor specified"}
-                  </p>
+                  <div className="flex-1">
+                    <h2 className="mb-[10px]">{event.title}</h2>
+                    <p className="my-[5px]">
+                      <strong>Date:</strong>{" "}
+                      {new Date(event.start_dt).toLocaleDateString()}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Time:</strong>{" "}
+                      {new Date(event.start_dt).toLocaleTimeString()} -{" "}
+                      {new Date(event.end_dt).toLocaleTimeString()}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Location:</strong>{" "}
+                      {event.location || "No location specified"}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Professor:</strong>{" "}
+                      {event.who || "No professor specified"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleAddClick(event.id)}
+                    className="ml-4 px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                  >
+                    +
+                  </button>
                 </li>
               ))}
             </ul>

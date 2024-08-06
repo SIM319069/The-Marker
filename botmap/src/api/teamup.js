@@ -10,10 +10,21 @@ const getStartAndEndOfMonth = () => {
     const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
     return { startOfMonth, endOfMonth };
 };
+const getSemesterDates = () => {
+    const year = moment().year();
+    const startMonth = 1; 
+    const endMonth = 5; 
+
+    const startDate = moment().year(year).month(startMonth - 1).startOf('month').format('YYYY-MM-DD');
+    const endDate = moment().year(year).month(endMonth).endOf('month').format('YYYY-MM-DD');
+    
+    return { startDate, endDate };
+};
 
 const useFetchEvents = () => {
     const [events, setEvents] = useState([]);
     const { startOfMonth, endOfMonth } = getStartAndEndOfMonth();
+    const { startDate, endDate } = getSemesterDates();
     const BASE_URL = `https://api.teamup.com/ksg7y4nwkfp7q6xyio/events?startDate=${startOfMonth}&endDate=${endOfMonth}`;
     useEffect(() => {
         axios
