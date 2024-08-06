@@ -15,7 +15,6 @@ const useFetchEvents = () => {
     const [events, setEvents] = useState([]);
     const { startOfWeek, endOfWeek } = getStartAndEndOfWeek();
     const BASE_URL = `https://api.teamup.com/ksg7y4nwkfp7q6xyio/events?startDate=${startOfWeek}&endDate=${endOfWeek}`;
-
     useEffect(() => {
         axios
             .get(BASE_URL, {

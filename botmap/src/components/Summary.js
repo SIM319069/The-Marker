@@ -15,12 +15,11 @@ function Summary() {
     RoomReservation: false,
     Xternalmcpe: false,
     XternalUndergrad: false,
-});
-const [searchTerm, setSearchTerm] = useState("");
-const handleSearch = (event) => {
-  setSearchTerm(event.target.value);
-};
-
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   // Filter events based on selected mode
   const today = new Date();
@@ -29,24 +28,23 @@ const handleSearch = (event) => {
 
   const handleFilterChangemorons = (event) => {
     setFilters({
-        ...filters,
-        [event.target.name]: event.target.checked,
+      ...filters,
+      [event.target.name]: event.target.checked,
     });
-};
-const filterEvents = (event) => {
-  let include = true;
-  if (filters.cpe && !event.title.includes("cpe")) include = false;
-  if (filters.mcpe && !event.title.includes("mcpe")) include = false;
-  if (filters.isne && !event.title.includes("isne")) include = false;
-  if (filters.RoomReservation && !event.title.includes("Room reservation"))
+  };
+  const filterEvents = (event) => {
+    let include = true;
+    if (filters.cpe && !event.title.includes("cpe")) include = false;
+    if (filters.mcpe && !event.title.includes("mcpe")) include = false;
+    if (filters.isne && !event.title.includes("isne")) include = false;
+    if (filters.RoomReservation && !event.title.includes("Room reservation"))
       include = false;
-  if (filters.Xternalmcpe && !event.title.includes("xternal mcpe"))
+    if (filters.Xternalmcpe && !event.title.includes("xternal mcpe"))
       include = false;
-  if (filters.XternalUndergrad && !event.title.includes("xternal Undergrad"))
+    if (filters.XternalUndergrad && !event.title.includes("xternal Undergrad"))
       include = false;
-  return include;
-};
-
+    return include;
+  };
 
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.start_dt);
@@ -182,19 +180,21 @@ const filterEvents = (event) => {
       ? `${topHour.toString().padStart(2, "0")}:00 - ${(topHour + 1) % 24}:00`
       : "N/A";
 
-      const filteredEventsMorons = events.filter((event) => filterEvents(event)).filter(
-          (event) =>
-              event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              (event.notes &&
-                  event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-              (event.location &&
-                  event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
-              (event.who &&
-                  event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
-              new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
-              new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
-              new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
-      );
+  const filteredEventsMorons = events
+    .filter((event) => filterEvents(event))
+    .filter(
+      (event) =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (event.notes &&
+          event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.location &&
+          event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.who &&
+          event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+    );
 
   return (
     <div className="flex m-0 font-sans bg-gray-100">
@@ -334,12 +334,12 @@ const filterEvents = (event) => {
           </div>
         </div>
         <input
-                            type="text"
-                            className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-                            placeholder="Search events"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
+          type="text"
+          className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+          placeholder="Search events"
+          value={searchTerm}
+          onChange={handleSearch}
+        />
         <ul className=" list-none p-0 w-full max-w-xl">
           {filteredEventsMorons.map((event) => (
             <li
@@ -363,7 +363,6 @@ const filterEvents = (event) => {
               <p className="my-[5px]">
                 <strong>Professor:</strong>{" "}
                 {event.who || "No professor specified"}
-                
               </p>
             </li>
           ))}
