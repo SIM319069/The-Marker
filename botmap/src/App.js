@@ -8,14 +8,14 @@ import ContactUs from './components/Contact';
 function App() {
     return (
         <Router>
-            <div className="flex">
+            <div className="flex flex-col justify-center items-center">
                 <NavBar />
                 <div>
                     <Routes>
                         <Route path="/" element={<Summary />} />
                         <Route path="/about" />
                         <Route path="/events" element={<Events />} />
-                        <Route path="/contact"/>
+                        <Route path="/contact" element={<ContactUs />}/>
                     </Routes>
                 </div>
             </div>
