@@ -76,10 +76,10 @@ function Summary() {
     const major = title.includes("cpe")
       ? "CPE"
       : title.includes("mcpe")
-      ? "MCPE"
-      : title.includes("isne")
-      ? "ISNE"
-      : "OTHER";
+        ? "MCPE"
+        : title.includes("isne")
+          ? "ISNE"
+          : "OTHER";
 
     if (room !== "No location specified" && !room.includes("xxx")) {
       if (!acc[room]) {
@@ -242,9 +242,8 @@ function Summary() {
                 className="w-24 h-8 bg-gray-300 rounded-full cursor-pointer relative flex items-center"
               >
                 <div
-                  className={`w-8 h-8 bg-blue-600 rounded-full shadow-md absolute transition-transform duration-300 ${
-                    mode === "today" ? "translate-x-0" : mode === "week" ? "translate-x-8" : "translate-x-16"
-                  }`}
+                  className={`w-8 h-8 bg-blue-600 rounded-full shadow-md absolute transition-transform duration-300 ${mode === "today" ? "translate-x-0" : mode === "week" ? "translate-x-8" : "translate-x-16"
+                    }`}
                 ></div>
               </div>
             </div>
@@ -256,41 +255,37 @@ function Summary() {
         <nav className="mb-5">
           <button
             onClick={() => setSelectedCategory("majorChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "majorChart"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Event Count
           </button>
           <button
             onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "roomChart"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Room Usage Chart
           </button>
           <button
             onClick={() => setSelectedCategory("doughnutChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "doughnutChart"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "doughnutChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Major Usage
           </button>
           <button
             onClick={() => setSelectedCategory("statistic")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "statistic"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Statistic
           </button>
@@ -330,7 +325,7 @@ function Summary() {
           )}
         </div>
         <div className="flex mt-[20px] space-x-10">
-          <div className="space-y-4">
+          <div className="flex flex-wrap space-x-4">
             {Object.keys(filters).map((filter) => (
               <label
                 className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px]"
@@ -382,14 +377,14 @@ function Summary() {
                 </p>
               </div>
               <button
-             // Add a handler for the button click
+                // Add a handler for the button click
                 className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
               >
                 +
               </button>
             </li>
           ))}
-        </ul> 
+        </ul>
       </main>
     </div>
   );
