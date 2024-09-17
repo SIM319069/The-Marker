@@ -14,9 +14,21 @@ function Summary() {
     mcpe: false,
     isne: false,
     RoomReservation: false,
-    Xternalmcpe: false,
+    XternalGrad: false,
     XternalUndergrad: false,
+    ปฏิทินการศึกษา: false,
   });
+
+  const filterValues = {
+    cpe: 3454069,
+    mcpe: 3454071,
+    isne: 3454070,
+    RoomReservation: 6820246,
+    XternalGrad: 8208439,
+    XternalUndergrad: 3454093,
+    ปฏิทินการศึกษา: 6616868,
+  };
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event) => {
@@ -52,17 +64,14 @@ function Summary() {
   };
 
   const filterEvents = (event) => {
-    let include = true;
-    if (filters.cpe && !event.title.includes("cpe")) include = false;
-    if (filters.mcpe && !event.title.includes("mcpe")) include = false;
-    if (filters.isne && !event.title.includes("isne")) include = false;
-    if (filters.RoomReservation && !event.title.includes("Room reservation"))
-      include = false;
-    if (filters.Xternalmcpe && !event.title.includes("xternal mcpe"))
-      include = false;
-    if (filters.XternalUndergrad && !event.title.includes("xternal Undergrad"))
-      include = false;
-    return include;
+    const activeFilters = Object.keys(filters).filter(
+      (filter) => filters[filter]
+    );
+    if (activeFilters.length === 0) return true;
+
+    return activeFilters.some((filter) =>
+      event.subcalendar_ids.includes(filterValues[filter])
+    );
   };
 
   const filteredEvents = events.filter((event) => {
@@ -194,7 +203,9 @@ function Summary() {
       ? `${topHour.toString().padStart(2, "0")}:00 - ${(topHour + 1) % 24}:00`
       : "N/A";
 
-  const filteredEventsMorons = filteredEvents.filter(
+  const filteredEventsMorons = events
+  .filter((event) => filterEvents(event))
+  .filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (event.notes &&
@@ -326,21 +337,21 @@ function Summary() {
         </div>
         <div className="flex mt-[20px] space-x-10">
           <div className="flex flex-wrap space-x-4">
-            {Object.keys(filters).map((filter) => (
-              <label
-                className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px]"
-                key={filter}
-              >
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  name={filter}
-                  checked={filters[filter]}
-                  onChange={handleFilterChange}
-                />
-                <span>{filter}</span>
-              </label>
-            ))}
+          {Object.keys(filters).map((filter) => (
+                <label
+                  className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px] "
+                  key={filter}
+                >
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    name={filter}
+                    checked={filters[filter]}
+                    onChange={handleFilterChange}
+                  />
+                  <span>{filter}</span>
+                </label>
+              ))}
           </div>
         </div>
         <input
