@@ -6,7 +6,7 @@ import useFetchEvents from "../api/teamup";
 import moment from "moment";
 
 function Summary() {
-  const [selectedCategory, setSelectedCategory] = useState("majorChart");
+  const [selectedCategory, setSelectedCategory] = useState("roomChart");
   const [mode, setMode] = useState("today");
   const events = useFetchEvents();
   const [filters, setFilters] = useState({
@@ -264,6 +264,15 @@ function Summary() {
           </div>
         </div>
         <nav className="mb-5">
+        <button
+            onClick={() => setSelectedCategory("roomChart")}
+            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+              }`}
+          >
+            Room Usage Chart
+          </button>
           <button
             onClick={() => setSelectedCategory("majorChart")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
@@ -274,13 +283,13 @@ function Summary() {
             Event Count
           </button>
           <button
-            onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
+            onClick={() => setSelectedCategory("frequencyChart")}
+            className={`mr-3 px-3 py-2 ${selectedCategory === "frequencyChart"
                 ? "bg-blue-500 text-white"
-                : "bg-gray-200"
+                : "bg-gray-200" 
               }`}
           >
-            Room Usage Chart
+            Frequency of Week
           </button>
           <button
             onClick={() => setSelectedCategory("doughnutChart")}
