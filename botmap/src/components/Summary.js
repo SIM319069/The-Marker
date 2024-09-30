@@ -6,17 +6,17 @@ import useFetchEvents from "../api/teamup";
 import moment from "moment";
 
 function Summary() {
-  const [selectedCategory, setSelectedCategory] = useState("dayChart");
+  const [selectedCategory, setSelectedCategory] = useState("roomChart");
   const [mode, setMode] = useState("today");
   const events = useFetchEvents();
   const [filters, setFilters] = useState({
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-    sunday: false, 
+    cpe: false,
+    mcpe: false,
+    isne: false,
+    RoomReservation: false,
+    XternalGrad: false,
+    XternalUndergrad: false,
+    ปฏิทินการศึกษา: false,
   });
 
   const filterValues = {
@@ -64,22 +64,14 @@ function Summary() {
   };
 
   const filterEvents = (event) => {
-    let include = true;
-    if (filters.monday && !event.title.toLowerCase().includes("monday"))
-      include = false;
-    if (filters.tuesday && !event.title.toLowerCase().includes("tuesday"))
-      include = false;
-    if (filters.wednesday && !event.title.toLowerCase().includes("wednesday"))
-      include = false;
-    if (filters.thursday && !event.title.toLowerCase().includes("thursday"))
-      include = false;
-    if (filters.friday && !event.title.toLowerCase().includes("friday"))
-      include = false;
-    if (filters.saturday && !event.title.toLowerCase().includes("saturday"))
-      include = false;
-    if (filters.sunday && !event.title.toLowerCase().includes("sunday"))
-      include = false;
-    return include;
+    const activeFilters = Object.keys(filters).filter(
+      (filter) => filters[filter]
+    );
+    if (activeFilters.length === 0) return true;
+
+    return activeFilters.some((filter) =>
+      event.subcalendar_ids.includes(filterValues[filter])
+    );
   };
 
   const filteredEvents = events.filter((event) => {
@@ -90,31 +82,23 @@ function Summary() {
   const roomUsage = filteredEvents.reduce((acc, event) => {
     const room = event.location || "No location specified";
     const title = event.title.toLowerCase();
-    const day = title.includes("monday")
-      ? "monday"
-      : title.includes("tuesday")
-      ? "tuesday"
-      : title.includes("wednesday")
-      ? "wednesday"
-      : title.includes("thursday")
-      ? "thursday"
-      : title.includes("friday")
-      ? "friday"
-      : title.includes("saturay")
-      ? "saturday"
-      : title.includes("sunday")
-      ? "sunday"
-      : "OTHER";
+    const major = title.includes("cpe")
+      ? "CPE"
+      : title.includes("mcpe")
+        ? "MCPE"
+        : title.includes("isne")
+          ? "ISNE"
+          : "OTHER";
 
     if (room !== "No location specified" && !room.includes("xxx")) {
       if (!acc[room]) {
         acc[room] = {
           total: 0,
-          days: { monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0, saturday: 0, sunday: 0 },
+          majors: { CPE: 0, MCPE: 0, ISNE: 0, OTHER: 0 },
         };
       }
       acc[room].total++;
-      acc[room].days[day]++;
+      acc[room].majors[major]++;
     }
     return acc;
   }, {});
@@ -136,17 +120,17 @@ function Summary() {
     ],
   };
 
-  const dayUsage = Object.values(roomUsage).reduce(
+  const majorUsage = Object.values(roomUsage).reduce(
     (acc, usage) => {
-      Object.keys(usage.days).forEach((day) => {
-        if (!acc[day]) {
-          acc[day] = 0;
+      Object.keys(usage.majors).forEach((major) => {
+        if (!acc[major]) {
+          acc[major] = 0;
         }
-        acc[day] += usage.days[day];
+        acc[major] += usage.majors[major];
       });
       return acc;
     },
-    { monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0, saturday: 0, sunday: 0, OTHER: 0 }
+    { CPE: 0, MCPE: 0, ISNE: 0, OTHER: 0 }
   );
 
   // Calculate room usage frequency from Monday to Friday
@@ -177,45 +161,38 @@ function Summary() {
 
 
   const doughnutData = {
-    labels: ["monday",  "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+    labels: ["ISNE", "CPE", "MCPE", "OTHER"],
     datasets: [
       {
-        label: "day Usage",
+        label: "Major Usage",
         data: [
-          dayUsage.monday,
-          dayUsage.tuesday,
-          dayUsage.wednesday,
-          dayUsage.thursday,
-          dayUsage.friday,
-          dayUsage.saturday,
-          dayUsage.sunday,
+          majorUsage.ISNE,
+          majorUsage.CPE,
+          majorUsage.MCPE,
+          majorUsage.OTHER,
         ],
-        backgroundColor: ["#deeb34", "#de008d", "#34eb71", "#34eb71", "#349ceb", "#df34eb", "#eb4934"],
+        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0", "#ff6384"],
       },
     ],
   };
-  const mondayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("monday")).length;
-  const tuesdayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("tuesday")).length;
-  const wednesdayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("wednesday")).length;
-  const thursdayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("thursday")).length;
-  const fridayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("friday")).length;
-  const saturdayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("saturday")).length;
-  const sundayCount = filteredEvents.filter((event) => 
-    event.title.toLowerCase().includes("sunday")).length;
-  
-  const daychartData = {
-    labels: ["monday",  "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+
+  const cpeCount = filteredEvents.filter((event) =>
+    event.title.toLowerCase().includes("cpe")
+  ).length;
+  const mcpeCount = filteredEvents.filter((event) =>
+    event.title.toLowerCase().includes("mcpe")
+  ).length;
+  const isneCount = filteredEvents.filter((event) =>
+    event.title.toLowerCase().includes("isne")
+  ).length;
+
+  const majorchartData = {
+    labels: ["ISNE", "CPE", "MCPE"],
     datasets: [
       {
         label: "Event Count",
-        data: [mondayCount, tuesdayCount, wednesdayCount, thursdayCount,fridayCount,saturdayCount,sundayCount ],
-        backgroundColor: ["#deeb34", "#de008d", "#34eb71", "#34eb71", "#349ceb", "#df34eb", "#eb4934"],
+        data: [isneCount, cpeCount, mcpeCount],
+        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0"],
       },
     ],
   };
@@ -332,16 +309,6 @@ function Summary() {
         </div>
         <nav className="mb-5">
           <button
-            onClick={() => setSelectedCategory("dayChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "dayChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Event Count
-          </button>
-          <button
             onClick={() => setSelectedCategory("roomChart")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
               ? "bg-blue-500 text-white"
@@ -374,7 +341,7 @@ function Summary() {
               : "bg-gray-200"
               }`}
           >
-            Day Usage
+            Major Usage
           </button>
           <button
             onClick={() => setSelectedCategory("statistic")}
@@ -387,9 +354,9 @@ function Summary() {
           </button>
         </nav>
         <div className="grid grid-cols-1 gap-5 p-5">
-          {selectedCategory === "dayChart" && (
+          {selectedCategory === "majorChart" && (
             <div className="w-full h-[400px]">
-              <Bar data={daychartData} />
+              <Bar data={majorchartData} />
             </div>
           )}
           {selectedCategory === "roomChart" && (
