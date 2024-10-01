@@ -209,8 +209,8 @@ function Summary() {
   );
 
   return (
-    <div className="flex m-0 font-sans bg-gray-100">
-      <main className="p-5 flex-1 ml-36 rounded-lg shadow-lg">
+    <div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
+      <main className="flex-1 pl-[150px] p-[20px] bg-[#e2e2eb]">
         <h1 className="mb-5 font-serif ml-5 text-4xl font-bold">
           Room Usage Summary
         </h1>
@@ -295,24 +295,24 @@ function Summary() {
             Statistic
           </button>
         </nav>
-        <div className="grid grid-cols-1 gap-5 p-5">
+        <div className="gap-32 p-5 flex h-[540px]">
           {selectedCategory === "majorChart" && (
-            <div className="w-full h-[400px]">
+            <div className="w-[800px] h-[500px]">
               <Bar data={majorchartData} />
             </div>
           )}
           {selectedCategory === "roomChart" && (
-            <div className="w-full h-[400px]">
+            <div className="w-[800px] h-[500px]">
               <Bar data={chartData} options={{ indexAxis: "y" }} />
             </div>
           )}
           {selectedCategory === "doughnutChart" && (
-            <div className="w-full h-[400px]">
+            <div className="w-[800px] h-[500px]">
               <Doughnut data={doughnutData} />
             </div>
           )}
           {selectedCategory === "statistic" && (
-            <div className="w-full h-[400px]">
+            <div className="w-[800px] h-[160px]">
               <div className="p-5 bg-white rounded-lg shadow">
                 <h2 className="text-2xl font-bold mb-4">Statistics</h2>
                 <p>
@@ -328,68 +328,76 @@ function Summary() {
               </div>
             </div>
           )}
-        </div>
-        <div className="flex mt-[20px] space-x-10">
-          <div className="space-y-4">
-            {Object.keys(filters).map((filter) => (
-              <label
-                className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px]"
-                key={filter}
-              >
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  name={filter}
-                  checked={filters[filter]}
-                  onChange={handleFilterChange}
-                />
-                <span>{filter}</span>
-              </label>
-            ))}
+          
+          <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
+            <ul className="list-none p-0 w-full max-w-xl">
+              {filteredEventsMorons.map((event) => (
+                <li
+                  key={event.id}
+                  className="bg-gray-100 p-4 mb-2 pr-12 rounded-sm shadow-sm flex justify-between items-center"
+                >
+                <div>
+                    <h2 className="mb-[10px]">{event.title}</h2>
+                    <p className="my-[5px]">
+                      <strong>Date:</strong>{" "}
+                      {new Date(event.start_dt).toLocaleDateString()}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Time:</strong>{" "}
+                      {new Date(event.start_dt).toLocaleTimeString()} - {" "}
+                      {new Date(event.end_dt).toLocaleTimeString()}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Location:</strong>{" "}
+                      {event.location || "No location specified"}
+                    </p>
+                    <p className="my-[5px]">
+                      <strong>Professor:</strong>{" "}
+                      {event.who || "No professor specified"}
+                    </p>
+                  </div>
+                  <button
+                // Add a handler for the button click
+                    className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+                  >
+                    +
+                  </button>
+                </li>
+              ))}
+            </ul> 
           </div>
         </div>
-        <input
-          type="text"
-          className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-          placeholder="Search events"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <ul className="list-none p-0 w-full max-w-xl">
-          {filteredEventsMorons.map((event) => (
-            <li
-              key={event.id}
-              className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm flex justify-between items-center"
+        <div className="w-full flex justify-center py-4">
+          <input
+            type="text"
+            className="w-[400px] p-3 border items-center border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+
+        <div className="justify-center w-[1000px] mx-auto mt-[20px] grid grid-cols-3 gap-4">
+          {Object.keys(filters).map((filter) => (
+            <label
+              className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4"
+              key={filter}
             >
-              <div>
-                <h2 className="mb-[10px]">{event.title}</h2>
-                <p className="my-[5px]">
-                  <strong>Date:</strong>{" "}
-                  {new Date(event.start_dt).toLocaleDateString()}
-                </p>
-                <p className="my-[5px]">
-                  <strong>Time:</strong>{" "}
-                  {new Date(event.start_dt).toLocaleTimeString()} - {" "}
-                  {new Date(event.end_dt).toLocaleTimeString()}
-                </p>
-                <p className="my-[5px]">
-                  <strong>Location:</strong>{" "}
-                  {event.location || "No location specified"}
-                </p>
-                <p className="my-[5px]">
-                  <strong>Professor:</strong>{" "}
-                  {event.who || "No professor specified"}
-                </p>
-              </div>
-              <button
-             // Add a handler for the button click
-                className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
-              >
-                +
-              </button>
-            </li>
+              <input
+                type="checkbox"
+                className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                name={filter}
+                checked={filters[filter]}
+                onChange={handleFilterChange}
+              />
+              <span>{filter}</span>
+            </label>
           ))}
-        </ul> 
+        </div>
+
+        
+
+        
       </main>
     </div>
   );

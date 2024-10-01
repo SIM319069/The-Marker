@@ -70,7 +70,7 @@ function Events() {
 
   return (
     <div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
-      <main className="flex-1 ml-[150px] p-[20px] bg-[#e2e2eb] shadow-[0_0_10px_rgba(0,0,0,0.1)]">
+      <main className="flex-1 pl-[150px] p-[20px] bg-[#e2e2eb] shadow-[0_0_10px_rgba(0,0,0,0.1)]">
         <h1 className=" mb-[20px] font-serif ml-[20px] text-[50px] font-bold">
           Teamup Events
         </h1>
