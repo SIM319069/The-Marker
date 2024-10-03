@@ -60,7 +60,7 @@ function Events() {
         new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
         new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
         new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
-    );
+    );//serch lel
 
   const handleAddClick = (eventId) => {
     // Handle the click event for adding an event

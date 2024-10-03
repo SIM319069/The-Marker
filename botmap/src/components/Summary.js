@@ -6,7 +6,7 @@ import useFetchEvents from "../api/teamup";
 import moment from "moment";
 
 function Summary() {
-  const [selectedCategory, setSelectedCategory] = useState("majorChart");
+  const [selectedCategory, setSelectedCategory] = useState("roomChart");
   const [mode, setMode] = useState("today");
   const events = useFetchEvents();
   const [filters, setFilters] = useState({
@@ -14,9 +14,21 @@ function Summary() {
     mcpe: false,
     isne: false,
     RoomReservation: false,
-    Xternalmcpe: false,
+    XternalGrad: false,
     XternalUndergrad: false,
+    ปฏิทินการศึกษา: false,
   });
+
+  const filterValues = {
+    cpe: 3454069,
+    mcpe: 3454071,
+    isne: 3454070,
+    RoomReservation: 6820246,
+    XternalGrad: 8208439,
+    XternalUndergrad: 3454093,
+    ปฏิทินการศึกษา: 6616868,
+  };
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event) => {
@@ -52,17 +64,14 @@ function Summary() {
   };
 
   const filterEvents = (event) => {
-    let include = true;
-    if (filters.cpe && !event.title.includes("cpe")) include = false;
-    if (filters.mcpe && !event.title.includes("mcpe")) include = false;
-    if (filters.isne && !event.title.includes("isne")) include = false;
-    if (filters.RoomReservation && !event.title.includes("Room reservation"))
-      include = false;
-    if (filters.Xternalmcpe && !event.title.includes("xternal mcpe"))
-      include = false;
-    if (filters.XternalUndergrad && !event.title.includes("xternal Undergrad"))
-      include = false;
-    return include;
+    const activeFilters = Object.keys(filters).filter(
+      (filter) => filters[filter]
+    );
+    if (activeFilters.length === 0) return true;
+
+    return activeFilters.some((filter) =>
+      event.subcalendar_ids.includes(filterValues[filter])
+    );
   };
 
   const filteredEvents = events.filter((event) => {
@@ -76,10 +85,10 @@ function Summary() {
     const major = title.includes("cpe")
       ? "CPE"
       : title.includes("mcpe")
-      ? "MCPE"
-      : title.includes("isne")
-      ? "ISNE"
-      : "OTHER";
+        ? "MCPE"
+        : title.includes("isne")
+          ? "ISNE"
+          : "OTHER";
 
     if (room !== "No location specified" && !room.includes("xxx")) {
       if (!acc[room]) {
@@ -194,7 +203,9 @@ function Summary() {
       ? `${topHour.toString().padStart(2, "0")}:00 - ${(topHour + 1) % 24}:00`
       : "N/A";
 
-  const filteredEventsMorons = filteredEvents.filter(
+  const filteredEventsMorons = events
+  .filter((event) => filterEvents(event))
+  .filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (event.notes &&
@@ -242,9 +253,8 @@ function Summary() {
                 className="w-24 h-8 bg-gray-300 rounded-full cursor-pointer relative flex items-center"
               >
                 <div
-                  className={`w-8 h-8 bg-blue-600 rounded-full shadow-md absolute transition-transform duration-300 ${
-                    mode === "today" ? "translate-x-0" : mode === "week" ? "translate-x-8" : "translate-x-16"
-                  }`}
+                  className={`w-8 h-8 bg-blue-600 rounded-full shadow-md absolute transition-transform duration-300 ${mode === "today" ? "translate-x-0" : mode === "week" ? "translate-x-8" : "translate-x-16"
+                    }`}
                 ></div>
               </div>
             </div>
@@ -254,43 +264,48 @@ function Summary() {
           </div>
         </div>
         <nav className="mb-5">
-          <button
-            onClick={() => setSelectedCategory("majorChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "majorChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Event Count
-          </button>
-          <button
+        <button
             onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "roomChart"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Room Usage Chart
           </button>
           <button
-            onClick={() => setSelectedCategory("doughnutChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "doughnutChart"
+            onClick={() => setSelectedCategory("majorChart")}
+            className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
+          >
+            Event Count
+          </button>
+          <button
+            onClick={() => setSelectedCategory("frequencyChart")}
+            className={`mr-3 px-3 py-2 ${selectedCategory === "frequencyChart"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200" 
+              }`}
+          >
+            Frequency of Week
+          </button>
+          <button
+            onClick={() => setSelectedCategory("doughnutChart")}
+            className={`mr-3 px-3 py-2 ${selectedCategory === "doughnutChart"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+              }`}
           >
             Major Usage
           </button>
           <button
             onClick={() => setSelectedCategory("statistic")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "statistic"
+            className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
           >
             Statistic
           </button>
