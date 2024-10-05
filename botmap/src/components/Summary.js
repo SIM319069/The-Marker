@@ -356,27 +356,27 @@ function Summary() {
         </nav>
         <div className="gap-32 p-5 flex h-[540px]">
           {selectedCategory === "majorChart" && (
-            <div className="w-[800] h-[500px]">
+            <div className="w-[800px] h-[500px]">
               <Bar data={majorchartData} />
             </div>
           )}
           {selectedCategory === "roomChart" && (
-            <div className="w-[800] h-[500px]">
+            <div className="w-[800px] h-[500px]">
               <Bar data={chartData} options={{ indexAxis: "y" }} />
             </div>
           )}
           {selectedCategory === "frequencyChart" && (
-            <div className="w-[800] h-[500px]">
+            <div className="w-[800px] h-[500px]">
               <Bar data={frequencyChartData} options={{ responsive: true }} />
             </div>
           )}
           {selectedCategory === "doughnutChart" && (
-            <div className="w-[800] h-[500px]">
+            <div className="w-[800px] h-[500px]">
               <Doughnut data={doughnutData} />
             </div>
           )}
           {selectedCategory === "statistic" && (
-            <div className="w-[800] h-[160px]">
+            <div className="w-full h-[160px]">
               <div className="p-5 bg-white rounded-lg shadow">
                 <h2 className="text-2xl font-bold mb-4">Statistics</h2>
                 <p>
