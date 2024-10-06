@@ -120,19 +120,6 @@ function Summary() {
     ],
   };
 
-  const majorUsage = Object.values(roomUsage).reduce(
-    (acc, usage) => {
-      Object.keys(usage.majors).forEach((major) => {
-        if (!acc[major]) {
-          acc[major] = 0;
-        }
-        acc[major] += usage.majors[major];
-      });
-      return acc;
-    },
-    { CPE: 0, MCPE: 0, ISNE: 0, OTHER: 0 }
-  );
-
   // Calculate room usage frequency from Monday to Friday
   const roomUsageByDay = filteredEvents.reduce((acc, event) => {
     const eventDay = moment(event.start_dt).format('dddd'); // Get the day of the week, e.g., "Monday"
@@ -157,24 +144,6 @@ function Summary() {
 
     return acc;
   }, {});
-
-
-
-  const doughnutData = {
-    labels: ["ISNE", "CPE", "MCPE", "OTHER"],
-    datasets: [
-      {
-        label: "Major Usage",
-        data: [
-          majorUsage.ISNE,
-          majorUsage.CPE,
-          majorUsage.MCPE,
-          majorUsage.OTHER,
-        ],
-        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0", "#ff6384"],
-      },
-    ],
-  };
 
   const cpeCount = filteredEvents.filter((event) =>
     event.title.toLowerCase().includes("cpe")
@@ -335,15 +304,7 @@ function Summary() {
           >
             Frequency of Week
           </button>
-          <button
-            onClick={() => setSelectedCategory("doughnutChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "doughnutChart"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-              }`}
-          >
-            Major Usage
-          </button>
+
           <button
             onClick={() => setSelectedCategory("statistic")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
@@ -370,11 +331,11 @@ function Summary() {
               <Bar data={frequencyChartData} options={{ responsive: true }} />
             </div>
           )}
-          {selectedCategory === "doughnutChart" && (
+          {/* {selectedCategory === "doughnutChart" && (
             <div className="w-[800px] h-[500px]">
               <Doughnut data={doughnutData} />
             </div>
-          )}
+          )} */}
           {selectedCategory === "statistic" && (
             <div className="w-full h-[160px]">
               <div className="p-5 bg-white rounded-lg shadow">
