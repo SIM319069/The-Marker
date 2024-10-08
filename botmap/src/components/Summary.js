@@ -74,11 +74,24 @@ function Summary() {
     );
   };
 
+  // Filter events based on mode, filters, and search term
   const filteredEvents = events.filter((event) => {
     const eventDate = moment(event.start_dt);
-    return (!start || !end || (eventDate.isBetween(start, end, null, '[]') && filterEvents(event)));
-  });
+    const matchesSearch = searchTerm
+      ? event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.who && event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+      : true;
 
+    return (
+      matchesSearch &&
+      (!start || !end || (eventDate.isBetween(start, end, null, '[]') && filterEvents(event)))
+    );
+  });
   const roomUsage = filteredEvents.reduce((acc, event) => {
     const room = event.location || "No location specified";
     const title = event.title.toLowerCase();
@@ -133,18 +146,17 @@ function Summary() {
     return acc;
   }, {});
 
-  // (Monday to Friday)
+  // Calculate room usage frequency from Monday to Friday for filtered events
   const totalRoomUsageByDay = filteredEvents.reduce((acc, event) => {
     const eventDay = moment(event.start_dt).format("dddd"); // Get the day of the week, e.g., "Monday"
-
     if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
       if (!acc[eventDay]) acc[eventDay] = 0; // Initialize if not present
       acc[eventDay] += 1; // Increment count for the day
     }
-
     return acc;
   }, {});
 
+  // Updated frequencyChartData to reflect filtered and searched events
   const cpeCount = filteredEvents.filter((event) =>
     event.title.toLowerCase().includes("cpe")
   ).length;
@@ -165,7 +177,6 @@ function Summary() {
       },
     ],
   };
-
   const frequencyChartData = {
     labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     datasets: [
@@ -182,7 +193,6 @@ function Summary() {
       },
     ],
   };
-
   const totalEventCount = filteredEvents.length;
 
   const totalRoomsUsed = Object.keys(roomUsage).length;
@@ -240,6 +250,7 @@ function Summary() {
         </h1>
         <div className="flex bg-gray-400 mb-5 w-full h-12"></div>
         <div className="grid grid-cols-3 gap-4 items-center">
+          {/* Other components */}
           <StatisticBox
             title="Total Event"
             value={totalEventCount}
@@ -276,17 +287,19 @@ function Summary() {
             </span>
           </div>
         </div>
+
+        {/* Category Navigation */}
         <nav className="mb-5">
           <button
             onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`mr-3 px-3 py-2 ${
+              selectedCategory === "roomChart"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             Room Usage Chart
-          </button>
-          <button
+          </button>          <button
             onClick={() => setSelectedCategory("majorChart")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
               ? "bg-blue-500 text-white"
@@ -297,15 +310,14 @@ function Summary() {
           </button>
           <button
             onClick={() => setSelectedCategory("frequencyChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "frequencyChart"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`mr-3 px-3 py-2 ${
+              selectedCategory === "frequencyChart"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             Frequency of Week
-          </button>
-
-          <button
+          </button>          <button
             onClick={() => setSelectedCategory("statistic")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
               ? "bg-blue-500 text-white"
@@ -315,7 +327,8 @@ function Summary() {
             Statistic
           </button>
         </nav>
-        <div className="gap-32 p-5 flex h-[540px]">
+
+        {/* Frequency of Week Chart */}        <div className="gap-32 p-5 flex h-[540px]">
           {selectedCategory === "majorChart" && (
             <div className="w-[800px] h-[500px]">
               <Bar data={majorchartData} />
@@ -326,12 +339,12 @@ function Summary() {
               <Bar data={chartData} options={{ indexAxis: "y" }} />
             </div>
           )}
-          {selectedCategory === "frequencyChart" && (
-            <div className="w-[800px] h-[500px]">
-              <Bar data={frequencyChartData} options={{ responsive: true }} />
-            </div>
-          )}
-          {/* {selectedCategory === "doughnutChart" && (
+        {selectedCategory === "frequencyChart" && (
+          <div className="w-[800px] h-[500px]">
+            <Bar data={frequencyChartData} options={{ responsive: true }} />
+          </div>
+        )}
+        {/* Search and Filter UI */}          {/* {selectedCategory === "doughnutChart" && (
             <div className="w-[800px] h-[500px]">
               <Doughnut data={doughnutData} />
             </div>
@@ -353,16 +366,15 @@ function Summary() {
               </div>
             </div>
           )}
-          <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
-            <input
-              type="text"
-              className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-              placeholder="Search events"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-
-            <ul className="list-none p-0 w-full max-w-xl">
+        <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
+          <input
+            type="text"
+            className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          {/* Events list */}            <ul className="list-none p-0 w-full max-w-xl">
               {filteredEventsMorons.map((event) => (
                 <li
                   key={event.id}
