@@ -4,6 +4,8 @@ import "chart.js/auto";
 import StatisticBox from "./StatisticBox";
 import useFetchEvents from "../api/teamup";
 import moment from "moment";
+import { google, outlook, office365, yahoo, ics, CalendarEvent } from "calendar-link";
+import { useEffect } from "react";
 
 function Summary() {
   const [selectedCategory, setSelectedCategory] = useState("roomChart");
@@ -34,6 +36,28 @@ function Summary() {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleEventClick = (event) => {
+    const timeZone = "Asia/Bangkok"; // Timezone for the event
+    
+    // Create Date objects for start and end times
+    const startDate = new Date(event.start_dt);
+    const endDate = new Date(event.end_dt);
+
+    startDate.setHours(startDate.getHours() + 7);
+    endDate.setHours(endDate.getHours() + 7);
+
+    // Construct the start and end times in the format required by Google Calendar
+    const startTime = startDate.toISOString().replace(/-|:|\.\d+/g, "").slice(0, 15); // Format: YYYYMMDDTHHMMSS
+    const endTime = endDate.toISOString().replace(/-|:|\.\d+/g, "").slice(0, 15); // Format: YYYYMMDDTHHMMSS
+
+    // console.log(startTime, endTime);
+
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(`Location: ${event.location || "No location specified"}\nProfessor: ${event.who || "No professor specified"}`)}&location=${encodeURIComponent(event.location || "No location specified")}&ctz=${encodeURIComponent(timeZone)}`;
+  
+    window.location.href = googleCalendarUrl;
+  };
+  
 
   const getDatesForMode = (mode) => {
     const today = moment().startOf('day');
@@ -74,11 +98,24 @@ function Summary() {
     );
   };
 
+  // Filter events based on mode, filters, and search term
   const filteredEvents = events.filter((event) => {
     const eventDate = moment(event.start_dt);
-    return (!start || !end || (eventDate.isBetween(start, end, null, '[]') && filterEvents(event)));
-  });
+    const matchesSearch = searchTerm
+      ? event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.who && event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+      : true;
 
+    return (
+      matchesSearch &&
+      (!start || !end || (eventDate.isBetween(start, end, null, '[]') && filterEvents(event)))
+    );
+  });
   const roomUsage = filteredEvents.reduce((acc, event) => {
     const room = event.location || "No location specified";
     const title = event.title.toLowerCase();
@@ -120,35 +157,30 @@ function Summary() {
     ],
   };
 
-  const majorUsage = Object.values(roomUsage).reduce(
-    (acc, usage) => {
-      Object.keys(usage.majors).forEach((major) => {
-        if (!acc[major]) {
-          acc[major] = 0;
-        }
-        acc[major] += usage.majors[major];
-      });
-      return acc;
-    },
-    { CPE: 0, MCPE: 0, ISNE: 0, OTHER: 0 }
-  );
+  // Calculate room usage frequency from Monday to Friday
+  const roomUsageByDay = filteredEvents.reduce((acc, event) => {
+    const eventDay = moment(event.start_dt).format('dddd'); // Get the day of the week, e.g., "Monday"
+    const room = event.location || "No location specified";
 
-  const doughnutData = {
-    labels: ["ISNE", "CPE", "MCPE", "OTHER"],
-    datasets: [
-      {
-        label: "Major Usage",
-        data: [
-          majorUsage.ISNE,
-          majorUsage.CPE,
-          majorUsage.MCPE,
-          majorUsage.OTHER,
-        ],
-        backgroundColor: ["#36a2eb", "#ff9f40", "#4bc0c0", "#ff6384"],
-      },
-    ],
-  };
+    if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
+      if (!acc[room]) acc[room] = { Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0 };
+      acc[room][eventDay] += 1;
+    }
 
+    return acc;
+  }, {});
+
+  // Calculate room usage frequency from Monday to Friday for filtered events
+  const totalRoomUsageByDay = filteredEvents.reduce((acc, event) => {
+    const eventDay = moment(event.start_dt).format("dddd"); // Get the day of the week, e.g., "Monday"
+    if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
+      if (!acc[eventDay]) acc[eventDay] = 0; // Initialize if not present
+      acc[eventDay] += 1; // Increment count for the day
+    }
+    return acc;
+  }, {});
+
+  // Updated frequencyChartData to reflect filtered and searched events
   const cpeCount = filteredEvents.filter((event) =>
     event.title.toLowerCase().includes("cpe")
   ).length;
@@ -169,7 +201,22 @@ function Summary() {
       },
     ],
   };
-
+  const frequencyChartData = {
+    labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    datasets: [
+      {
+        label: "Total Room Usage Frequency",
+        data: [
+          totalRoomUsageByDay.Monday || 0,
+          totalRoomUsageByDay.Tuesday || 0,
+          totalRoomUsageByDay.Wednesday || 0,
+          totalRoomUsageByDay.Thursday || 0,
+          totalRoomUsageByDay.Friday || 0,
+        ],
+        backgroundColor: ["#a88d32", "#a83285", "#32a834", "#a85932", "#326ba8"],
+      },
+    ],
+  };
   const totalEventCount = filteredEvents.length;
 
   const totalRoomsUsed = Object.keys(roomUsage).length;
@@ -204,20 +251,20 @@ function Summary() {
       : "N/A";
 
   const filteredEventsMorons = events
-  .filter((event) => filterEvents(event))
-  .filter(
-    (event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (event.notes &&
-        event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (event.location &&
-        event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (event.who &&
-        event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
-      new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
-      new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
-  );
+    .filter((event) => filterEvents(event))
+    .filter(
+      (event) =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (event.notes &&
+          event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.location &&
+          event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.who &&
+          event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+    );
 
   return (
     <div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
@@ -227,6 +274,7 @@ function Summary() {
         </h1>
         <div className="flex bg-gray-400 mb-5 w-full h-12"></div>
         <div className="grid grid-cols-3 gap-4 items-center">
+          {/* Other components */}
           <StatisticBox
             title="Total Event"
             value={totalEventCount}
@@ -263,54 +311,48 @@ function Summary() {
             </span>
           </div>
         </div>
+
+        {/* Category Navigation */}
         <nav className="mb-5">
-        <button
+          <button
             onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "roomChart"
+            className={`mr-3 px-3 py-2 ${
+              selectedCategory === "roomChart"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-              }`}
+            }`}
           >
             Room Usage Chart
-          </button>
-          <button
+          </button>          <button
             onClick={() => setSelectedCategory("majorChart")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
               }`}
           >
             Event Count
           </button>
           <button
             onClick={() => setSelectedCategory("frequencyChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "frequencyChart"
+            className={`mr-3 px-3 py-2 ${
+              selectedCategory === "frequencyChart"
                 ? "bg-blue-500 text-white"
-                : "bg-gray-200" 
-              }`}
+                : "bg-gray-200"
+            }`}
           >
             Frequency of Week
-          </button>
-          <button
-            onClick={() => setSelectedCategory("doughnutChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "doughnutChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-              }`}
-          >
-            Major Usage
-          </button>
-          <button
+          </button>          <button
             onClick={() => setSelectedCategory("statistic")}
             className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
               }`}
           >
             Statistic
           </button>
         </nav>
-        <div className="gap-32 p-5 flex h-[540px]">
+
+        {/* Frequency of Week Chart */}        <div className="gap-32 p-5 flex h-[540px]">
           {selectedCategory === "majorChart" && (
             <div className="w-[800px] h-[500px]">
               <Bar data={majorchartData} />
@@ -321,13 +363,18 @@ function Summary() {
               <Bar data={chartData} options={{ indexAxis: "y" }} />
             </div>
           )}
-          {selectedCategory === "doughnutChart" && (
+        {selectedCategory === "frequencyChart" && (
+          <div className="w-[800px] h-[500px]">
+            <Bar data={frequencyChartData} options={{ responsive: true }} />
+          </div>
+        )}
+        {/* Search and Filter UI */}          {/* {selectedCategory === "doughnutChart" && (
             <div className="w-[800px] h-[500px]">
               <Doughnut data={doughnutData} />
             </div>
-          )}
+          )} */}
           {selectedCategory === "statistic" && (
-            <div className="w-[800px] h-[160px]">
+            <div className="w-full h-[160px]">
               <div className="p-5 bg-white rounded-lg shadow">
                 <h2 className="text-2xl font-bold mb-4">Statistics</h2>
                 <p>
@@ -343,15 +390,21 @@ function Summary() {
               </div>
             </div>
           )}
-          
-          <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
-            <ul className="list-none p-0 w-full max-w-xl">
+        <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
+          <input
+            type="text"
+            className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          {/* Events list */}            <ul className="list-none p-0 w-full max-w-xl">
               {filteredEventsMorons.map((event) => (
                 <li
                   key={event.id}
                   className="bg-gray-100 p-4 mb-2 pr-12 rounded-sm shadow-sm flex justify-between items-center"
                 >
-                <div>
+                  <div>
                     <h2 className="mb-[10px]">{event.title}</h2>
                     <p className="my-[5px]">
                       <strong>Date:</strong>{" "}
@@ -372,26 +425,16 @@ function Summary() {
                     </p>
                   </div>
                   <button
-                // Add a handler for the button click
+                  onClick={() => handleEventClick(event)}
                     className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
                   >
                     +
                   </button>
                 </li>
               ))}
-            </ul> 
+            </ul>
           </div>
         </div>
-        <div className="w-full flex justify-center py-4">
-          <input
-            type="text"
-            className="w-[400px] p-3 border items-center border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-            placeholder="Search events"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-        </div>
-
         <div className="justify-center w-[1000px] mx-auto mt-[20px] grid grid-cols-3 gap-4">
           {Object.keys(filters).map((filter) => (
             <label
@@ -409,10 +452,6 @@ function Summary() {
             </label>
           ))}
         </div>
-
-        
-
-        
       </main>
     </div>
   );
