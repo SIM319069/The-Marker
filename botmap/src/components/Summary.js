@@ -268,7 +268,7 @@ function Summary() {
 
   return (
     <div>
-      <main className="flex flex-col bg-cover pl-[150px] p-[20px] bg-[#e2e2eb]">
+      <main className="flex flex-col bg-cover pl-40 p-4 bg-[#e2e2eb]">
         <h1 className="mb-5 font-serif text-4xl font-bold">
           Room Usage Summary
         </h1>

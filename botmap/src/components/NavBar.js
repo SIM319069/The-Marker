@@ -16,7 +16,7 @@ function NavBar() {
     };
 
     return (
-        <nav className={`fixed top-0 left-0 h-screen ${isOpen ? 'w-40' : 'w-16'} bg-white text-gray-800 shadow-lg transition-all duration-300`}>
+        <nav className={`fixed top-0 left-0 h-screen opacity-50 ${isOpen ? 'w-40' : 'w-16'} bg-white text-gray-800 shadow-lg transition-all duration-300`}>
             <div className="flex flex-col items-center py-4">
                 <button
                     onClick={toggleSidebar}

@@ -88,7 +88,7 @@ function Events() {
             />
           </div>
 
-          <div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-[1650px] h-[50px] item-center justify-center"></div>
+          <div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-full h-[50px] item-center justify-center"></div>
 
           <div className="flex mt-[20px] space-x-10">
             <div className=" space-y-4">
