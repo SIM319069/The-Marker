@@ -4,6 +4,8 @@ import "chart.js/auto";
 import StatisticBox from "./StatisticBox";
 import useFetchEvents from "../api/teamup";
 import moment from "moment";
+import { google, outlook, office365, yahoo, ics, CalendarEvent } from "calendar-link";
+import { useEffect } from "react";
 
 function Summary() {
   const [selectedCategory, setSelectedCategory] = useState("roomChart");
@@ -34,6 +36,28 @@ function Summary() {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleEventClick = (event) => {
+    const timeZone = "Asia/Bangkok"; // Timezone for the event
+    
+    // Create Date objects for start and end times
+    const startDate = new Date(event.start_dt);
+    const endDate = new Date(event.end_dt);
+
+    startDate.setHours(startDate.getHours() + 7);
+    endDate.setHours(endDate.getHours() + 7);
+
+    // Construct the start and end times in the format required by Google Calendar
+    const startTime = startDate.toISOString().replace(/-|:|\.\d+/g, "").slice(0, 15); // Format: YYYYMMDDTHHMMSS
+    const endTime = endDate.toISOString().replace(/-|:|\.\d+/g, "").slice(0, 15); // Format: YYYYMMDDTHHMMSS
+
+    // console.log(startTime, endTime);
+
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(`Location: ${event.location || "No location specified"}\nProfessor: ${event.who || "No professor specified"}`)}&location=${encodeURIComponent(event.location || "No location specified")}&ctz=${encodeURIComponent(timeZone)}`;
+  
+    window.location.href = googleCalendarUrl;
+  };
+  
 
   const getDatesForMode = (mode) => {
     const today = moment().startOf('day');
@@ -401,7 +425,7 @@ function Summary() {
                     </p>
                   </div>
                   <button
-                    // Add a handler for the button click
+                  onClick={() => handleEventClick(event)}
                     className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
                   >
                     +
