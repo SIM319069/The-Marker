@@ -267,9 +267,9 @@ function Summary() {
     );
 
   return (
-    <div className="flex m-0 bg-[rgb(245,249,255) min-h-screen]">
-      <main className="flex-1 pl-[150px] p-[20px] bg-[#e2e2eb]">
-        <h1 className="mb-5 font-serif ml-5 text-4xl font-bold">
+    <div>
+      <main className="flex flex-col bg-cover pl-[150px] p-[20px] bg-[#e2e2eb]">
+        <h1 className="mb-5 font-serif text-4xl font-bold">
           Room Usage Summary
         </h1>
         <div className="flex bg-gray-400 mb-5 w-full h-12"></div>
@@ -312,129 +312,136 @@ function Summary() {
           </div>
         </div>
 
-        {/* Category Navigation */}
-        <nav className="mb-5">
-          <button
-            onClick={() => setSelectedCategory("roomChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "roomChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Room Usage Chart
-          </button>          <button
-            onClick={() => setSelectedCategory("majorChart")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "majorChart"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-              }`}
-          >
-            Event Count
-          </button>
-          <button
-            onClick={() => setSelectedCategory("frequencyChart")}
-            className={`mr-3 px-3 py-2 ${
-              selectedCategory === "frequencyChart"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Frequency of Week
-          </button>          <button
-            onClick={() => setSelectedCategory("statistic")}
-            className={`mr-3 px-3 py-2 ${selectedCategory === "statistic"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-              }`}
-          >
-            Statistic
-          </button>
-        </nav>
+        
 
-        {/* Frequency of Week Chart */}        <div className="gap-32 p-5 flex h-[540px]">
-          {selectedCategory === "majorChart" && (
-            <div className="w-[800px] h-[500px]">
-              <Bar data={majorchartData} />
-            </div>
-          )}
-          {selectedCategory === "roomChart" && (
-            <div className="w-[800px] h-[500px]">
-              <Bar data={chartData} options={{ indexAxis: "y" }} />
-            </div>
-          )}
-        {selectedCategory === "frequencyChart" && (
-          <div className="w-[800px] h-[500px]">
-            <Bar data={frequencyChartData} options={{ responsive: true }} />
-          </div>
-        )}
-        {/* Search and Filter UI */}          {/* {selectedCategory === "doughnutChart" && (
-            <div className="w-[800px] h-[500px]">
-              <Doughnut data={doughnutData} />
-            </div>
-          )} */}
-          {selectedCategory === "statistic" && (
-            <div className="w-full h-[160px]">
-              <div className="p-5 bg-white rounded-lg shadow">
-                <h2 className="text-2xl font-bold mb-4">Statistics</h2>
-                <p>
-                  <strong>Total Rooms Used:</strong> {totalRoomsUsed}
-                </p>
-                <p>
-                  <strong>Average Event Duration:</strong>{" "}
-                  {averageEventDuration} minutes
-                </p>
-                <p>
-                  <strong>Peak Usage Hour:</strong> {peakHourFormatted}
-                </p>
+        {/* Frequency of Week Chart */}        <div className="gap-32 py-5 flex h-[540px]">
+          <div className="w-full max-w-[800px] bg-gray-100 rounded-lg border border-gray-300">
+                {/* Category Navigation */}
+            <nav className="my-5 justify-center flex">
+              <button
+                onClick={() => setSelectedCategory("roomChart")}
+                className={`mr-3 px-3 py-2 rounded-md ${
+                  selectedCategory === "roomChart"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Room Usage Chart
+              </button>          <button
+                onClick={() => setSelectedCategory("majorChart")}
+                className={`mr-3 px-3 py-2 rounded-md ${selectedCategory === "majorChart"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+                  }`}
+              >
+                Event Count
+              </button>
+              <button
+                onClick={() => setSelectedCategory("frequencyChart")}
+                className={`mr-3 px-3 py-2 rounded-md ${
+                  selectedCategory === "frequencyChart"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Frequency of Week
+              </button>          <button
+                onClick={() => setSelectedCategory("statistic")}
+                className={`mr-3 px-3 py-2 rounded-md ${selectedCategory === "statistic"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+                  }`}
+              >
+                Statistic
+              </button>
+            </nav>
+            {selectedCategory === "majorChart" && (
+              <div className="w-[800px] h-[500px]">
+                <Bar data={majorchartData} />
               </div>
-            </div>
-          )}
-        <div class="w-auto h-[500px] overflow-y-scroll overflow-x-hidden">
-          <input
-            type="text"
-            className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-            placeholder="Search events"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-          {/* Events list */}            <ul className="list-none p-0 w-full max-w-xl">
-              {filteredEventsMorons.map((event) => (
-                <li
-                  key={event.id}
-                  className="bg-gray-100 p-4 mb-2 pr-12 rounded-sm shadow-sm flex justify-between items-center"
-                >
-                  <div>
-                    <h2 className="mb-[10px]">{event.title}</h2>
-                    <p className="my-[5px]">
-                      <strong>Date:</strong>{" "}
-                      {new Date(event.start_dt).toLocaleDateString()}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Time:</strong>{" "}
-                      {new Date(event.start_dt).toLocaleTimeString()} - {" "}
-                      {new Date(event.end_dt).toLocaleTimeString()}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Location:</strong>{" "}
-                      {event.location || "No location specified"}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Professor:</strong>{" "}
-                      {event.who || "No professor specified"}
-                    </p>
-                  </div>
-                  <button
-                  onClick={() => handleEventClick(event)}
-                    className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
-                  >
-                    +
-                  </button>
-                </li>
-              ))}
-            </ul>
+            )}
+            {selectedCategory === "roomChart" && (
+              <div className="w-[800px] h-[500px]">
+                <Bar data={chartData} options={{ indexAxis: "y" }} />
+              </div>
+            )}
+            {selectedCategory === "frequencyChart" && (
+              <div className="w-[800px] h-[500px]">
+                <Bar data={frequencyChartData} options={{ responsive: true }} />
+              </div>
+            )}
+            {/* Search and Filter UI */}          {/* {selectedCategory === "doughnutChart" && (
+                <div className="w-[800px] h-[500px]">
+                  <Doughnut data={doughnutData} />
+                </div>
+              )} */}
+            {selectedCategory === "statistic" && (
+              <div className="w-[800px] h-[160px]">
+                <div className="p-5 bg-white rounded-lg shadow">
+                  <h2 className="text-2xl font-bold mb-4">Statistics</h2>
+                  <p>
+                    <strong>Total Rooms Used:</strong> {totalRoomsUsed}
+                  </p>
+                  <p>
+                    <strong>Average Event Duration:</strong>{" "}
+                    {averageEventDuration} minutes
+                  </p>
+                  <p>
+                    <strong>Peak Usage Hour:</strong> {peakHourFormatted}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        <div className="w-[500px] bg-gray-100 border border-gray-300 rounded-t-lg shadow-sm overflow-hidden">
+          <input
+              type="text"
+              className="w-full h-[50px] p-3 border-0 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 ease-in-out"
+              placeholder="Search events"
+              value={searchTerm}
+              onChange={handleSearch}
+          />
+          <div class="h-[450px] overflow-y-scroll overflow-x-hidden">
+            
+            {/* Events list */}            <ul className="list-none p-0 w-full max-w-xl">
+                {filteredEventsMorons.map((event) => (
+                  <li
+                    key={event.id}
+                    className="bg-gray-100 p-4 pr-12 border-y border-gray-300 shadow-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <h2 className="mb-[10px]">{event.title}</h2>
+                      <p className="my-[5px]">
+                        <strong>Date:</strong>{" "}
+                        {new Date(event.start_dt).toLocaleDateString()}
+                      </p>
+                      <p className="my-[5px]">
+                        <strong>Time:</strong>{" "}
+                        {new Date(event.start_dt).toLocaleTimeString()} - {" "}
+                        {new Date(event.end_dt).toLocaleTimeString()}
+                      </p>
+                      <p className="my-[5px]">
+                        <strong>Location:</strong>{" "}
+                        {event.location || "No location specified"}
+                      </p>
+                      <p className="my-[5px]">
+                        <strong>Professor:</strong>{" "}
+                        {event.who || "No professor specified"}
+                      </p>
+                    </div>
+                    <button
+                    onClick={() => handleEventClick(event)}
+                      className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+                    >
+                      +
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>  
+        
         <div className="justify-center w-[1000px] mx-auto mt-[20px] grid grid-cols-3 gap-4">
           {Object.keys(filters).map((filter) => (
             <label
