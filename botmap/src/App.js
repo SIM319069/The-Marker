@@ -10,7 +10,7 @@ function App() {
         <Router>
             <div className="flex flex-col justify-center items-center">
                 <NavBar />
-                <div>
+                <div className=" min-w-full">
                     <Routes>
                         <Route path="/" element={<Summary />} />
                         <Route path="/events" element={<Events />} />
