@@ -157,26 +157,15 @@ function Summary() {
     ],
   };
 
-  // Calculate room usage frequency from Monday to Friday
-  const roomUsageByDay = filteredEvents.reduce((acc, event) => {
-    const eventDay = moment(event.start_dt).format('dddd'); // Get the day of the week, e.g., "Monday"
-    const room = event.location || "No location specified";
-
-    if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
-      if (!acc[room]) acc[room] = { Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0 };
-      acc[room][eventDay] += 1;
-    }
-
-    return acc;
-  }, {});
-
-  // Calculate room usage frequency from Monday to Friday for filtered events
+  // (Monday to Friday)
   const totalRoomUsageByDay = filteredEvents.reduce((acc, event) => {
     const eventDay = moment(event.start_dt).format("dddd"); // Get the day of the week, e.g., "Monday"
+
     if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
       if (!acc[eventDay]) acc[eventDay] = 0; // Initialize if not present
       acc[eventDay] += 1; // Increment count for the day
     }
+
     return acc;
   }, {});
 
@@ -217,6 +206,7 @@ function Summary() {
       },
     ],
   };
+
   const totalEventCount = filteredEvents.length;
 
   const totalRoomsUsed = Object.keys(roomUsage).length;
