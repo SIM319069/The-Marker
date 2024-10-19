@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaInfoCircle, FaCalendarAlt, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
+import { FaInfoCircle, FaCalendarAlt, FaEnvelope, FaBars, FaTimes, FaHome } from "react-icons/fa";
 import logo from '../Images/marker_logo.png';
 
 function NavBar() {
@@ -28,13 +28,17 @@ function NavBar() {
                     <div className="flex flex-col items-center mt-6">
                         <Link to="/" className="flex flex-col items-center text-gray-800 text-2xl font-bold">
                             <img src={logo} alt="Logo" className="w-16 h-16 rounded-full mb-3" />
-                            <span className="text-sm">BOtMAPs</span>
+                            <span className="text-sm">BOTMAPs</span>
                         </Link>
                     </div>
                 )}
                 <ul className="w-full mt-6">
                     {isOpen ? (
                         <>
+                            <li className="group flex items-center py-4 px-6 hover:bg-gray-100 transition cursor-pointer" onClick={() => navigateTo('/')}>
+                                <FaHome className="text-lg mr-3 group-hover:text-blue-500 transition" />
+                                <span className="text-base group-hover:text-blue-500 transition">Home</span>
+                            </li>
                             <li className="group flex items-center py-4 px-6 hover:bg-gray-100 transition cursor-pointer" onClick={() => navigateTo('/about')}>
                                 <FaInfoCircle className="text-lg mr-3 group-hover:text-blue-500 transition" />
                                 <span className="text-base group-hover:text-blue-500 transition">About</span>
@@ -49,8 +53,7 @@ function NavBar() {
                             </li>
                         </>
                     ) : (
-                        <li>
-                        </li>
+                        <li></li>
                     )}
                 </ul>
             </div>
