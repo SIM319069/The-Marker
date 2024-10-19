@@ -39,7 +39,7 @@ function Summary() {
 
   const handleEventClick = (event) => {
     const timeZone = "Asia/Bangkok"; // Timezone for the event
-    
+
     // Create Date objects for start and end times
     const startDate = new Date(event.start_dt);
     const endDate = new Date(event.end_dt);
@@ -54,10 +54,10 @@ function Summary() {
     // console.log(startTime, endTime);
 
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(`Location: ${event.location || "No location specified"}\nProfessor: ${event.who || "No professor specified"}`)}&location=${encodeURIComponent(event.location || "No location specified")}&ctz=${encodeURIComponent(timeZone)}`;
-  
+
     window.location.href = googleCalendarUrl;
   };
-  
+
 
   const getDatesForMode = (mode) => {
     const today = moment().startOf('day');
@@ -103,12 +103,12 @@ function Summary() {
     const eventDate = moment(event.start_dt);
     const matchesSearch = searchTerm
       ? event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (event.who && event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
-        new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
-        new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
+      (event.notes && event.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.who && event.who.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
+      new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
+      new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
       : true;
 
     return (
@@ -274,7 +274,6 @@ function Summary() {
         </h1>
         <div className="flex bg-gray-400 mb-5 w-full h-12"></div>
         <div className="grid grid-cols-3 gap-4 items-center">
-          {/* Other components */}
           <StatisticBox
             title="Total Event"
             value={totalEventCount}
@@ -312,19 +311,18 @@ function Summary() {
           </div>
         </div>
 
-        
 
-        {/* Frequency of Week Chart */}        <div className="gap-32 py-5 flex h-[540px]">
+
+        <div className="gap-32 py-5 flex h-[540px]">
           <div className="w-full max-w-[800px] bg-gray-100 rounded-lg border border-gray-300">
-                {/* Category Navigation */}
+            {/* Category Navigation */}
             <nav className="my-5 justify-center flex">
               <button
                 onClick={() => setSelectedCategory("roomChart")}
-                className={`mr-3 px-3 py-2 rounded-md ${
-                  selectedCategory === "roomChart"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`mr-3 px-3 py-2 rounded-md ${selectedCategory === "roomChart"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
                 Room Usage Chart
               </button>          <button
@@ -338,11 +336,10 @@ function Summary() {
               </button>
               <button
                 onClick={() => setSelectedCategory("frequencyChart")}
-                className={`mr-3 px-3 py-2 rounded-md ${
-                  selectedCategory === "frequencyChart"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`mr-3 px-3 py-2 rounded-md ${selectedCategory === "frequencyChart"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
                 Frequency of Week
               </button>          <button
@@ -370,11 +367,6 @@ function Summary() {
                 <Bar data={frequencyChartData} options={{ responsive: true }} />
               </div>
             )}
-            {/* Search and Filter UI */}          {/* {selectedCategory === "doughnutChart" && (
-                <div className="w-[800px] h-[500px]">
-                  <Doughnut data={doughnutData} />
-                </div>
-              )} */}
             {selectedCategory === "statistic" && (
               <div className="w-[800px] h-[160px]">
                 <div className="p-5 bg-white rounded-lg shadow">
@@ -393,17 +385,18 @@ function Summary() {
               </div>
             )}
           </div>
-        <div className="w-[500px] bg-gray-100 border border-gray-300 rounded-t-lg shadow-sm overflow-hidden">
-          <input
+          <div className="w-[500px] bg-gray-100 border border-gray-300 rounded-t-lg shadow-sm overflow-hidden">
+            <input
               type="text"
               className="w-full h-[50px] p-3 border-0 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 ease-in-out"
               placeholder="Search events"
               value={searchTerm}
               onChange={handleSearch}
-          />
-          <div class="h-[450px] overflow-y-scroll overflow-x-hidden">
-            
-            {/* Events list */}            <ul className="list-none p-0 w-full max-w-xl">
+            />
+            <div class="h-[450px] overflow-y-scroll overflow-x-hidden">
+
+              {/* Events list */}
+              <ul className="list-none p-0 w-full max-w-xl">
                 {filteredEventsMorons.map((event) => (
                   <li
                     key={event.id}
@@ -430,7 +423,7 @@ function Summary() {
                       </p>
                     </div>
                     <button
-                    onClick={() => handleEventClick(event)}
+                      onClick={() => handleEventClick(event)}
                       className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
                     >
                       +
@@ -440,8 +433,8 @@ function Summary() {
               </ul>
             </div>
           </div>
-        </div>  
-        
+        </div>
+
         <div className="justify-center w-[1000px] mx-auto mt-[20px] grid grid-cols-3 gap-4">
           {Object.keys(filters).map((filter) => (
             <label
