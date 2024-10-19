@@ -157,15 +157,26 @@ function Summary() {
     ],
   };
 
-  // (Monday to Friday)
+  // Calculate room usage frequency from Monday to Friday
+  const roomUsageByDay = filteredEvents.reduce((acc, event) => {
+    const eventDay = moment(event.start_dt).format('dddd'); // Get the day of the week, e.g., "Monday"
+    const room = event.location || "No location specified";
+
+    if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
+      if (!acc[room]) acc[room] = { Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0 };
+      acc[room][eventDay] += 1;
+    }
+
+    return acc;
+  }, {});
+
+  // Calculate room usage frequency from Monday to Friday for filtered events
   const totalRoomUsageByDay = filteredEvents.reduce((acc, event) => {
     const eventDay = moment(event.start_dt).format("dddd"); // Get the day of the week, e.g., "Monday"
-
     if (["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(eventDay)) {
       if (!acc[eventDay]) acc[eventDay] = 0; // Initialize if not present
       acc[eventDay] += 1; // Increment count for the day
     }
-
     return acc;
   }, {});
 
@@ -206,7 +217,6 @@ function Summary() {
       },
     ],
   };
-
   const totalEventCount = filteredEvents.length;
 
   const totalRoomsUsed = Object.keys(roomUsage).length;
@@ -257,7 +267,7 @@ function Summary() {
     );
 
   return (
-    <div className="ml-10">
+    <div>
       <main className="flex flex-col bg-cover pl-40 p-4 bg-[#e2e2eb]">
         <h1 className="mb-5 font-serif text-4xl font-bold">
           Room Usage Summary
@@ -270,7 +280,7 @@ function Summary() {
             value={totalEventCount}
             percentage={null}
           />
-          <div className="flex items-center ml-6">
+          <div className="flex items-center ml-4">
             <label htmlFor="modeSwitch" className="mr-2 text-xl font-medium">
               Mode:
             </label>
@@ -383,7 +393,7 @@ function Summary() {
               </div>
             )}
           </div>
-        <div className="ml-0 w-[500px] bg-gray-100 border border-gray-300 rounded-t-lg shadow-sm overflow-hidden">
+        <div className="w-[500px] bg-gray-100 border border-gray-300 rounded-t-lg shadow-sm overflow-hidden">
           <input
               type="text"
               className="w-full h-[50px] p-3 border-0 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 ease-in-out"
