@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import About from './components/About';
 import Events from './components/Events';
 import NavBar from './components/NavBar'; 
 import Summary from './components/Summary';
@@ -13,6 +14,7 @@ function App() {
                 <div className=" min-w-full">
                     <Routes>
                         <Route path="/" element={<Summary />} />
+                        <Route path="/about" element={<About />} />
                         <Route path="/events" element={<Events />} />
                         <Route path="/contact" element={<ContactUs />}/>
                     </Routes>
