@@ -1,6 +1,6 @@
 import React from "react";
 
-// StatisticBox component to display a statistic with a title, value, and optional percentage change
+//StatisticBox component to display a statistic with a title, value, and optional percentage change
 const StatisticBox = ({ title, value, percentage, positive }) => {
 	return (
 		<div className="bg-statisticboxcolor p-4 rounded shadow-md w-[500px]">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2"; // Import Graphs
 import "chart.js/auto"; // Import Chart.js components
 import StatisticBox from "./StatisticBox"; // Import custom StatisticBox component
 import useFetchEvents from "../api/teamup"; // Custom hook to fetch events

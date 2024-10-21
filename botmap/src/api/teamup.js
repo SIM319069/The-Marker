@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 
-// API key for Teamup API - Used for authenticating requests
+//API key for Teamup API - Used for authenticating requests
 const API_KEY =
     "8e4d82f938d73b8ee730140e9b48f9c5bf8fcfe874eb5058f0fe30a0b8fdd1fe";
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// ContactUs component allows users to submit a contact form.
+//ContactUs component allows users to submit a contact form.
 const ContactUs = () => {
   // State to hold form data: name, email, and message.
   const [formData, setFormData] = useState({

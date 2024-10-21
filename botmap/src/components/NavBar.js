@@ -4,7 +4,7 @@ import { FaInfoCircle, FaCalendarAlt, FaEnvelope, FaBars, FaTimes, FaHome } from
 import logo from '../Images/marker_logo.png';
 
 function NavBar() {
-    // State to manage sidebar open/close status
+    //State to manage sidebar open/close status
     const [isOpen, setIsOpen] = useState(true);
     let navigate = useNavigate();
 

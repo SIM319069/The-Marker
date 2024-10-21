@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../css/Events.css";
 import useFetchEvents from "../api/teamup";
 
-// Events component fetches and displays events with search and filter functionality.
+//Events component fetches and displays events with search and filter functionality.
 function Events() {
   // Fetch events data using custom hook and set up state for search and filters.
   const events = useFetchEvents();

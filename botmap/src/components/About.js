@@ -1,6 +1,6 @@
 import React from 'react';
 
-// About component provides an overview of the Botmaps software solution.
+//About component provides an overview of the Botmaps software solution.
 const About = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-12">
