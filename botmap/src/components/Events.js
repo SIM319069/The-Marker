@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import "../css/Events.css";
 import useFetchEvents from "../api/teamup";
 
+// Events component fetches and displays events with search and filter functionality.
 function Events() {
+  // Fetch events data using custom hook and set up state for search and filters.
   const events = useFetchEvents();
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
@@ -15,6 +17,7 @@ function Events() {
     ปฏิทินการศึกษา: false,
   });
 
+  // Mapping of filter names to their corresponding IDs.
   const filterValues = {
     cpe: 3454069,
     mcpe: 3454071,
@@ -25,10 +28,12 @@ function Events() {
     ปฏิทินการศึกษา: 6616868,
   };
 
+  // Handle search input changes.
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  // Handle changes to filter checkboxes.
   const handleFilterChange = (event) => {
     setFilters({
       ...filters,
@@ -36,16 +41,18 @@ function Events() {
     });
   };
 
+  // Filter events based on active filters.
   const filterEvents = (event) => {
     const activeFilters = Object.keys(filters).filter(
       (filter) => filters[filter]
     );
-    if (activeFilters.length === 0) return true;
+    if (activeFilters.length === 0) return true; // No filters applied, show all events.
     return activeFilters.some((filter) =>
       event.subcalendar_ids.includes(filterValues[filter])
     );
   };
 
+  // Filtered events based on search term and selected filters.
   const filteredEvents = events
     .filter((event) => filterEvents(event))
     .filter(
@@ -60,94 +67,94 @@ function Events() {
         new Date(event.start_dt).toLocaleDateString().includes(searchTerm) ||
         new Date(event.start_dt).toLocaleTimeString().includes(searchTerm) ||
         new Date(event.end_dt).toLocaleTimeString().includes(searchTerm)
-    );//serch lel
+    );
 
+  // Handle the click event for adding an event.
   const handleAddClick = (eventId) => {
-    // Handle the click event for adding an event
     console.log(`Add button clicked for event ID: ${eventId}`);
-    // You can add further logic here, such as updating state or calling an API
+    // Additional logic for handling the event can be added here.
   };
 
   return (
-  
-      <main className="flex flex-col bg-cover pl-[150px] p-[20px] bg-[#e2e2eb] ">
-        <h1 className=" mb-[20px] font-serif ml-[20px] text-[50px] font-bold">
-          Teamup Events
-        </h1>
-        <div className="mb-[20px] ">
-          <div className="flex items-center justify-center gap-4">
-            <h3 className="text-center text-lg font-sans md:font-serif ">
-              Filters:
-            </h3>
-            <input
-              type="text"
-              className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
-              placeholder="Search events"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-          </div>
-
-          <div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-full h-[50px] item-center justify-center"></div>
-
-          <div className="flex mt-[20px] space-x-10">
-            <div className=" space-y-4">
-              {Object.keys(filters).map((filter) => (
-                <label
-                  className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px] "
-                  key={filter}
-                >
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    name={filter}
-                    checked={filters[filter]}
-                    onChange={handleFilterChange}
-                  />
-                  <span>{filter}</span>
-                </label>
-              ))}
-            </div>
-
-            <ul className=" list-none p-0 w-full max-w-xl">
-              {filteredEvents.map((event) => (
-                <li
-                  key={event.id}
-                  className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm flex items-center justify-between"
-                >
-                  <div className="flex-1">
-                    <h2 className="mb-[10px]">{event.title}</h2>
-                    <p className="my-[5px]">
-                      <strong>Date:</strong>{" "}
-                      {new Date(event.start_dt).toLocaleDateString()}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Time:</strong>{" "}
-                      {new Date(event.start_dt).toLocaleTimeString()} -{" "}
-                      {new Date(event.end_dt).toLocaleTimeString()}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Location:</strong>{" "}
-                      {event.location || "No location specified"}
-                    </p>
-                    <p className="my-[5px]">
-                      <strong>Professor:</strong>{" "}
-                      {event.who || "No professor specified"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleAddClick(event.id)}
-                    className="ml-4 px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                  >
-                    +
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <main className="flex flex-col bg-cover pl-[150px] p-[20px] bg-[#e2e2eb] ">
+      <h1 className=" mb-[20px] font-serif ml-[20px] text-[50px] font-bold">
+        Teamup Events
+      </h1>
+      <div className="mb-[20px] ">
+        <div className="flex items-center justify-center gap-4">
+          <h3 className="text-center text-lg font-sans md:font-serif ">
+            Filters:
+          </h3>
+          <input
+            type="text"
+            className="w-[400px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
         </div>
-      </main>
 
+        <div className="flex bg-navbarcolor mt-[30px] mb-[20px] w-full h-[50px] item-center justify-center"></div>
+
+        <div className="flex mt-[20px] space-x-10">
+          <div className=" space-y-4">
+            {/* Render filter checkboxes */}
+            {Object.keys(filters).map((filter) => (
+              <label
+                className="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition gap-4 mb-[10px] "
+                key={filter}
+              >
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  name={filter}
+                  checked={filters[filter]}
+                  onChange={handleFilterChange}
+                />
+                <span>{filter}</span>
+              </label>
+            ))}
+          </div>
+
+          {/* Display filtered events */}
+          <ul className=" list-none p-0 w-full max-w-xl">
+            {filteredEvents.map((event) => (
+              <li
+                key={event.id}
+                className="bg-gray-100 p-4 mb-2 rounded-sm shadow-sm flex items-center justify-between"
+              >
+                <div className="flex-1">
+                  <h2 className="mb-[10px]">{event.title}</h2>
+                  <p className="my-[5px]">
+                    <strong>Date:</strong>{" "}
+                    {new Date(event.start_dt).toLocaleDateString()}
+                  </p>
+                  <p className="my-[5px]">
+                    <strong>Time:</strong>{" "}
+                    {new Date(event.start_dt).toLocaleTimeString()} -{" "}
+                    {new Date(event.end_dt).toLocaleTimeString()}
+                  </p>
+                  <p className="my-[5px]">
+                    <strong>Location:</strong>{" "}
+                    {event.location || "No location specified"}
+                  </p>
+                  <p className="my-[5px]">
+                    <strong>Professor:</strong>{" "}
+                    {event.who || "No professor specified"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleAddClick(event.id)}
+                  className="ml-4 px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                >
+                  +
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </main>
   );
 }
 

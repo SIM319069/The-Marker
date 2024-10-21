@@ -4,13 +4,16 @@ import { FaInfoCircle, FaCalendarAlt, FaEnvelope, FaBars, FaTimes, FaHome } from
 import logo from '../Images/marker_logo.png';
 
 function NavBar() {
+    // State to manage sidebar open/close status
     const [isOpen, setIsOpen] = useState(true);
     let navigate = useNavigate();
 
+    // Function to navigate to a specified path
     const navigateTo = (path) => {
         navigate(path);
     };
 
+    // Toggle the sidebar open/close state
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -21,9 +24,11 @@ function NavBar() {
                 <button
                     onClick={toggleSidebar}
                     className="absolute top-2 right-1 p-2 text-gray-200 hover:text-blue-400 focus:outline-none"
+                    aria-label={isOpen ? "Close sidebar" : "Open sidebar"} // Improved accessibility
                 >
                     {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </button>
+                
                 {isOpen && (
                     <div className="flex flex-col items-center mt-6">
                         <Link to="/" className="flex flex-col items-center text-gray-200 text-2xl font-bold hover:text-blue-400">
@@ -33,6 +38,7 @@ function NavBar() {
                         </Link>
                     </div>
                 )}
+                
                 <ul className="w-full mt-6">
                     {isOpen ? (
                         <>
@@ -54,7 +60,7 @@ function NavBar() {
                             </li>
                         </>
                     ) : (
-                        <li></li>
+                        <li></li> // Empty list item to maintain layout when sidebar is collapsed
                     )}
                 </ul>
             </div>

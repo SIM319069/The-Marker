@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 
+// ContactUs component allows users to submit a contact form.
 const ContactUs = () => {
+  // State to hold form data: name, email, and message.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
   });
 
+  // Handle input field changes and update state accordingly.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -15,6 +18,7 @@ const ContactUs = () => {
     });
   };
 
+  // Handle form submission; prevent default behavior and log form data.
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted', formData);
@@ -22,8 +26,11 @@ const ContactUs = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
+      {/* Form container with styling */}
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        {/* Form title */}
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Contact Us</h2>
+        {/* Name input field */}
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
             Name
@@ -38,6 +45,7 @@ const ContactUs = () => {
             required
           />
         </div>
+        {/* Email input field */}
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Email
@@ -52,6 +60,7 @@ const ContactUs = () => {
             required
           />
         </div>
+        {/* Message input field */}
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
             Message
@@ -66,6 +75,7 @@ const ContactUs = () => {
             required
           ></textarea>
         </div>
+        {/* Submit button */}
         <div className="flex items-center justify-between">
           <button
             type="submit"
