@@ -1,5 +1,6 @@
 import React from "react";
 
+//StatisticBox component to display a statistic with a title, value, and optional percentage change
 const StatisticBox = ({ title, value, percentage, positive }) => {
 	return (
 		<div className="bg-statisticboxcolor p-4 rounded shadow-md w-[500px]">
@@ -8,7 +9,7 @@ const StatisticBox = ({ title, value, percentage, positive }) => {
 			{percentage !== null && (
 				<p
 					className={`text-sm ${positive ? "text-green-500" : "text-red-500"}`}>
-					{percentage}% {positive ? "▲" : "▼"}
+					{percentage}% {positive ? "▲" : "▼"} {/* Arrow indicator for change */}
 				</p>
 			)}
 		</div>
